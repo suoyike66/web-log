@@ -9,5 +9,8 @@
 
 <style scoped>
  /* css 代码， scoped 表示节点内 css 样式只针对此组件有效，不影响其他组件  */
-
+/* 自定义顶部加载 Loading 颜色 */
+#nprogress .bar {
+   background: #409eff!important;
+}
 </style>
