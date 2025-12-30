@@ -29,6 +29,12 @@ public class JwtTokenHelper implements InitializingBean {
      */
     @Value("${jwt.issuer}")
     private String issuer;
+
+    /**
+     * Token 失效时间（分钟）
+     */
+    @Value("${jwt.tokenExpireTime}")
+    private Long tokenExpireTime;
     /**
      * 秘钥
      */
@@ -68,8 +74,8 @@ public class JwtTokenHelper implements InitializingBean {
      */
     public String generateToken(String username) {
         LocalDateTime now = LocalDateTime.now();
-        // Token 一个小时后失效
-        LocalDateTime expireTime = now.plusHours(1);
+        // 设置 Token 失效时间
+        LocalDateTime expireTime = now.plusMinutes(tokenExpireTime);
 
         return Jwts.builder().setSubject(username)
                 .setIssuer(issuer)
@@ -92,6 +98,31 @@ public class JwtTokenHelper implements InitializingBean {
         } catch (ExpiredJwtException e) {
             throw new CredentialsExpiredException("Token 失效", e);
         }
+    }
+
+    /**
+     * 校验 Token 是否可用
+     * @param token
+     * @return
+     */
+    public void validateToken(String token) {
+        jwtParser.parseClaimsJws(token);
+    }
+
+    /**
+     * 解析 Token 获取用户名
+     * @param token
+     * @return
+     */
+    public String getUsernameByToken(String token) {
+        try {
+            Claims claims = jwtParser.parseClaimsJws(token).getBody();
+            String username = claims.getSubject();
+            return username;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
