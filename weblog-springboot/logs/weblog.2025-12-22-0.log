@@ -1,0 +1,21 @@
+2025-12-22 10:44:33.554 [main] INFO  com.suoyike.weblogweb.WeblogWebApplicationTests - Starting WeblogWebApplicationTests using Java 1.8.0_311 on suoyike with PID 9348 (started by 35906 in D:\code\Project\web-log\weblog-springboot\weblog-web)
+2025-12-22 10:44:33.554 [main] INFO  com.suoyike.weblogweb.WeblogWebApplicationTests - The following profiles are active: prod
+2025-12-22 10:44:34.927 [main] INFO  com.suoyike.weblogweb.WeblogWebApplicationTests - Started WeblogWebApplicationTests in 1.8 seconds (JVM running for 2.834)
+2025-12-22 10:44:35.132 [main] INFO  com.suoyike.weblogweb.WeblogWebApplicationTests - 这是一行 Info 级别日志
+2025-12-22 10:44:35.133 [main] WARN  com.suoyike.weblogweb.WeblogWebApplicationTests - 这是一行 Warn 级别日志
+2025-12-22 10:44:35.133 [main] ERROR com.suoyike.weblogweb.WeblogWebApplicationTests - 这是一行 Error 级别日志
+2025-12-22 10:44:35.133 [main] INFO  com.suoyike.weblogweb.WeblogWebApplicationTests - 这是一行带有占位符日志，作者：蓑衣客
+[TraceId: ] 2025-12-22 11:24:26.197 [main] INFO  com.suoyike.weblog.web.WeblogWebApplication - Starting WeblogWebApplication using Java 1.8.0_311 on suoyike with PID 9888 (D:\code\Project\web-log\weblog-springboot\weblog-web\target\classes started by 35906 in D:\code\Project\web-log\weblog-springboot)
+[TraceId: ] 2025-12-22 11:24:26.199 [main] INFO  com.suoyike.weblog.web.WeblogWebApplication - The following profiles are active: prod
+[TraceId: ] 2025-12-22 11:24:26.889 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[TraceId: ] 2025-12-22 11:24:26.896 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+[TraceId: ] 2025-12-22 11:24:26.896 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.56]
+[TraceId: ] 2025-12-22 11:24:26.952 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+[TraceId: ] 2025-12-22 11:24:26.952 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 719 ms
+[TraceId: ] 2025-12-22 11:24:27.210 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[TraceId: ] 2025-12-22 11:24:27.217 [main] INFO  com.suoyike.weblog.web.WeblogWebApplication - Started WeblogWebApplication in 1.439 seconds (JVM running for 2.1)
+[TraceId: ] 2025-12-22 11:24:31.926 [http-nio-8080-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+[TraceId: ] 2025-12-22 11:24:31.926 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[TraceId: ] 2025-12-22 11:24:31.927 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+[TraceId: 2696aefe-f266-466f-966c-0ce512411174] 2025-12-22 11:24:32.036 [http-nio-8080-exec-1] INFO  c.s.weblog.common.aspect.ApiOperationLogAspect - ====== 请求开始: [测试接口], 入参: {"username":"admin","sex":1}, 请求类: TestController, 请求方法: test =================================== 
+[TraceId: 2696aefe-f266-466f-966c-0ce512411174] 2025-12-22 11:24:32.045 [http-nio-8080-exec-1] INFO  c.s.weblog.common.aspect.ApiOperationLogAspect - ====== 请求结束: [测试接口], 耗时: 20ms, 出参: {"username":"admin","sex":1} =================================== 

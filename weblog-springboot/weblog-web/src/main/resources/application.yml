@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    # 默认激活 dev 环境
+    active: dev
+#    active: prod
+
+jwt:
+  # 签发人
+  issuer: suoyike
+  # 秘钥
+  secret: Gzc0/SaCT72GknpXqTM+bRgvOFc7+9UCgFBsppNO/SXt+eiJmYly/8J53UKBMtRTlsLrp9ih+OcH+g6zBTCgCw==
+
