@@ -29,11 +29,11 @@
                 </div>
             </el-tooltip>
 
-            <!-- 点击全屏展示 -->
+			<!-- 点击全屏展示 -->
             <el-tooltip class="box-item" effect="dark" content="全屏" placement="bottom">
-                <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 mr-2 hover:bg-gray-200">
+                <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 mr-2 hover:bg-gray-200" @click="toggle">
                     <el-icon>
-                        <FullScreen />
+                        <FullScreen/>
                     </el-icon>
                 </div>
             </el-tooltip>
@@ -60,6 +60,11 @@
 </template>
 <script setup>
 import { useMenuStore } from '@/stores/menu'
+// 引入 useFullscreen
+import { useFullscreen } from '@vueuse/core'
+
+	// isFullscreen 表示当前是否处于全屏；toggle 用于动态切换全屏、非全屏
+    const { isFullscreen, toggle } = useFullscreen()
     // 引入了菜单 store
     const menuStore = useMenuStore()
     // icon 点击事件
