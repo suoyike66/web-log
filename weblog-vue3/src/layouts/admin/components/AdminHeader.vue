@@ -2,12 +2,13 @@
   <!-- 后台的头部 -->
 	<!-- 通过 flex 指定水平布局 -->
     <div class="bg-white h-[64px] flex pr-4 border-b border-slate-200">
-        <!-- 左边栏收缩、展开 -->
-      <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 hover:bg-gray-200">
-        <el-icon>
-            <Fold />
-        </el-icon>
-      </div>
+		<!-- 左边栏收缩、展开 -->
+        <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 hover:bg-gray-200" @click="handleMenuWidth">
+            <el-icon>
+                <Fold v-if="menuStore.menuWidth == '250px'"/>
+                <Expand v-else />
+            </el-icon>
+        </div>
         <!-- 右边容器，通过 ml-auto 让其在父容器的右边 -->
         <div class="ml-auto flex items-center">
             <!-- 刷新按钮 -->
@@ -57,4 +58,13 @@
         </div>
     </div>
 </template>
-
+<script setup>
+import { useMenuStore } from '@/stores/menu'
+    // 引入了菜单 store
+    const menuStore = useMenuStore()
+    // icon 点击事件
+    const handleMenuWidth = () => {
+        // 动态设置菜单的宽度大小
+        menuStore.handleMenuWidth()
+    }
+</script>

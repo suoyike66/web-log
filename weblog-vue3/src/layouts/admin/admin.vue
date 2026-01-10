@@ -2,8 +2,8 @@
     <!-- 外层容器 -->
     <el-container>
     
-        <!-- 左边侧边栏 -->
-        <el-aside>
+		<!-- 左边侧边栏 -->
+        <el-aside :width='menuStore.menuWidth' class="transition-all">
             <AdminMenu></AdminMenu>
         </el-aside>
         
@@ -36,6 +36,10 @@ import AdminFooter from './components/AdminFooter.vue';
 import AdminHeader from './components/AdminHeader.vue';
 import AdminMenu from './components/AdminMenu.vue';
 import AdminTagList from './components/AdminTagList.vue';
+import { useMenuStore } from '@/stores/menu'
+
+
+    const menuStore = useMenuStore()
 </script>
 
 <style scoped>
