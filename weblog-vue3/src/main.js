@@ -14,10 +14,10 @@ import '@/permission'
 // 导入 Element Plus 图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 引入全局状态管理 Pinia
-import { createPinia } from 'pinia'
+import pinia from '@/stores'
+
 
 const app = createApp(App)
-const pinia = createPinia()
 app.use(router)
 // 应用 Pinia
 app.use(pinia)
