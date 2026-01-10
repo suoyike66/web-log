@@ -60,7 +60,7 @@ import { ElMessage } from 'element-plus'
 import { ref, reactive,onMounted, onBeforeUnmount } from 'vue' 
 import { useRouter } from 'vue-router'
  import { showMessage} from '@/composables/util'
-import { setToken } from '@/composables/auth'
+import { setToken } from '@/composables/cookie'
  // 登录按钮加载
 const loading = ref(false)
 
