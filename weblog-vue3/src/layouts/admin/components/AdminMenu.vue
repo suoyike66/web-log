@@ -22,7 +22,7 @@
     </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMenuStore } from '@/stores/menu'
 
@@ -35,6 +35,12 @@ const menuStore = useMenuStore()
 const isCollapse = computed(() =>  !(menuStore.menuWidth == '250px'))
 // 根据路由地址判断哪个菜单被选中
 const defaultActive = ref(route.path)
+
+// 监听路由变化，更新选中的菜单
+watch(() => route.path, (newPath) => {
+    defaultActive.value = newPath
+})
+
 // 菜单选择事件
 const handleSelect = (path) => {
     router.push(path)
