@@ -33,15 +33,25 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public Response updatePassword(UpdateAdminUserPasswordReqVO updateAdminUserPasswordReqVO) {
-        // 拿到用户名、密码
-        String username = updateAdminUserPasswordReqVO.getUsername();
+        // 获取当前登录的用户名
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        // 拿到请求中的用户名、密码
+        String requestUsername = updateAdminUserPasswordReqVO.getUsername();
         String password = updateAdminUserPasswordReqVO.getPassword();
+
+        // 验证当前用户是否有权限修改指定用户的密码
+        // 在当前实现中，只允许用户修改自己的密码
+        if (!currentUsername.equals(requestUsername)) {
+            return Response.fail("没有权限修改其他用户的密码");
+        }
 
         // 加密密码
         String encodePassword = passwordEncoder.encode(password);
 
         // 更新到数据库
-        int count = userMapper.updatePasswordByUsername(username, encodePassword);
+        int count = userMapper.updatePasswordByUsername(requestUsername, encodePassword);
 
         return count == 1 ? Response.success() : Response.fail(ResponseCodeEnum.USERNAME_NOT_FOUND);
     }

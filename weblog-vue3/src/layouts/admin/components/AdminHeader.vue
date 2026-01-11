@@ -63,7 +63,7 @@
 	<!-- 修改密码 -->
     <el-dialog v-model="dialogVisible" title="修改密码" width="40%" :draggable ="true" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="formRef" :rules="rules" :model="form">
-                    <el-form-item label="用户名" prop="username" label-width="120px">
+                    <el-form-item label="用户名" label-width="120px">
                         <!-- 输入框组件 -->
                         <el-input size="large" v-model="form.username" placeholder="请输入用户名" clearable disabled />
                     </el-form-item>
@@ -129,13 +129,6 @@ import { updateAdminPassword } from '@/api/admin/user'
 
     // 规则校验
     const rules = {
-        username: [
-            {
-                required: true,
-                message: '用户名不能为空',
-                trigger: 'blur'
-            }
-        ],
         password: [
             {
                 required: true,
