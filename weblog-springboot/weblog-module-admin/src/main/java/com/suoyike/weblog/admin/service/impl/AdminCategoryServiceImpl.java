@@ -9,6 +9,7 @@ import com.suoyike.weblog.admin.model.vo.category.FindCategoryPageListRspVO;
 import com.suoyike.weblog.admin.service.AdminCategoryService;
 import com.suoyike.weblog.common.domain.dos.CategoryDO;
 import com.suoyike.weblog.common.domain.mapper.CategoryMapper;
+import com.suoyike.weblog.common.model.vo.SelectRspVO;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
 import org.apache.commons.lang3.StringUtils;
@@ -116,5 +117,27 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
         return Response.success();
     }
+
+    @Override
+    public Response findCategorySelectList() {
+        // 查询所有分类
+        List<CategoryDO> categoryDOS = categoryMapper.selectList(null);
+
+        // DO 转 VO
+        List<SelectRspVO> selectRspVOS = null;
+        // 如果分类数据不为空
+        if (!CollectionUtils.isEmpty(categoryDOS)) {
+            // 将分类 ID 作为 Value 值，将分类名称作为 label 展示
+            selectRspVOS = categoryDOS.stream()
+                    .map(categoryDO -> SelectRspVO.builder()
+                            .label(categoryDO.getName())
+                            .value(categoryDO.getId())
+                            .build())
+                    .collect(Collectors.toList());
+        }
+
+        return Response.success(selectRspVOS);
+    }
+
 
 }
