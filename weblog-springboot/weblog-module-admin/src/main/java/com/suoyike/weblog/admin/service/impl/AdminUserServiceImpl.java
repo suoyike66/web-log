@@ -1,7 +1,7 @@
 package com.suoyike.weblog.admin.service.impl;
 
-import com.suoyike.weblog.admin.model.vo.FindUserInfoRspVO;
-import com.suoyike.weblog.admin.model.vo.UpdateAdminUserPasswordReqVO;
+import com.suoyike.weblog.admin.model.vo.user.FindUserInfoRspVO;
+import com.suoyike.weblog.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import com.suoyike.weblog.admin.service.AdminUserService;
 import com.suoyike.weblog.common.domain.mapper.UserMapper;
 import com.suoyike.weblog.common.enums.ResponseCodeEnum;

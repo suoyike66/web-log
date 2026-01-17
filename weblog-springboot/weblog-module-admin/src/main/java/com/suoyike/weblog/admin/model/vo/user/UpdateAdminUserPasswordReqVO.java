@@ -1,4 +1,4 @@
-package com.suoyike.weblog.admin.model.vo;
+package com.suoyike.weblog.admin.model.vo.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

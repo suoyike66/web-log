@@ -1,6 +1,6 @@
 package com.suoyike.weblog.admin.service;
 
-import com.suoyike.weblog.admin.model.vo.UpdateAdminUserPasswordReqVO;
+import com.suoyike.weblog.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import com.suoyike.weblog.common.utils.Response;
 
 /**
