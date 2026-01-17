@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.service;
 
 import com.suoyike.weblog.admin.model.vo.category.AddCategoryReqVO;
+import com.suoyike.weblog.admin.model.vo.category.DeleteCategoryReqVO;
 import com.suoyike.weblog.admin.model.vo.category.FindCategoryPageListReqVO;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
@@ -25,5 +26,12 @@ public interface AdminCategoryService {
      * @return
      */
     PageResponse findCategoryList(FindCategoryPageListReqVO findCategoryPageListReqVO);
+
+    /**
+     * 删除分类
+     * @param deleteCategoryReqVO
+     * @return
+     */
+    Response deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO);
 }
 
