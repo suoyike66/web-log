@@ -22,7 +22,7 @@
         <el-card shadow="never">
             <!-- 新增按钮 -->
             <div class="mb-5">
-                <el-button type="primary" @click="dialogVisible = true">
+                <el-button type="primary" @click="addCategoryBtnClick">
                     <el-icon class="mr-1">
                         <Plus />
                     </el-icon>
@@ -30,7 +30,7 @@
             </div>
 
             <!-- 分页列表 -->
-            <el-table :data="tableData" border stripe style="width: 100%">
+            <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading">
                 <el-table-column prop="name" label="分类名称" width="180" />
                 <el-table-column prop="createTime" label="创建时间" width="180" />
                 <el-table-column label="操作" >
@@ -55,22 +55,13 @@
         </el-card>
 
     <!-- 添加分类 -->
-    <el-dialog v-model="dialogVisible" title="添加文章分类" width="40%" :draggable ="true" :close-on-click-modal="false" :close-on-press-escape="false">
+    <FormDialog ref="formDialogRef" title="添加文章分类" :destroy-on-close="true" @submit="onSubmit">
         <el-form ref="formRef" :rules="rules" :model="form">
-                    <el-form-item label="分类名称" prop="name" label-width="80px">
-                        <!-- 输入框组件 -->
-                        <el-input size="large" v-model="form.name" placeholder="请输入分类名称" maxlength="20" show-word-limit clearable/>
+                    <el-form-item label="分类名称" prop="name" label-width="80px" size="large">
+                        <el-input v-model="form.name" placeholder="请输入分类名称" maxlength="20" show-word-limit clearable/>
                     </el-form-item>
                 </el-form>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="onSubmit">
-                    提交
-                </el-button>
-            </span>
-        </template>
-    </el-dialog>
+    </FormDialog>
 
     </div>
 </template>
@@ -81,6 +72,7 @@ import { ref, reactive } from 'vue'
 import { getCategoryPageList, addCategory, deleteCategory } from '@/api/admin/category'
 import moment from 'moment'
 import { showMessage, showModel } from '@/composables/util'
+import FormDialog from '@/components/FormDialog.vue'
 
 // 分页查询的分类名称
 const searchCategoryName = ref('')
@@ -88,8 +80,8 @@ const searchCategoryName = ref('')
 const pickDate = ref('')
 
 // 查询条件：开始结束时间
-const startDate = reactive({})
-const endDate = reactive({})
+const startDate = ref(null)
+const endDate = ref(null)
 
 // 监听日期组件改变事件，并将开始结束时间设置到变量中
 const datepickerChange = (e) => {
@@ -129,6 +121,8 @@ const shortcuts = [
     },
 ]
 
+// 表格加载 Loading
+const tableLoading = ref(false)
 // 表格数据
 const tableData = ref([])
 // 当前页码，给了一个默认值 1
@@ -141,7 +135,10 @@ const size = ref(10)
 
 // 获取分页数据
 function getTableData() {
+    // 显示表格 loading
+    tableLoading.value = true
     // 调用后台分页接口，并传入所需参数
+    
     getCategoryPageList({current: current.value, size: size.value, startDate: startDate.value, endDate: endDate.value, name: searchCategoryName.value})
     .then((res) => {
         if (res.success == true) {
@@ -152,6 +149,7 @@ function getTableData() {
             total.value = res.total
         }
     })
+    .finally(() => tableLoading.value = false) // 隐藏表格 loading
 }
 getTableData()
 
@@ -171,7 +169,12 @@ const reset = () => {
 }
 
 // 对话框是否显示
-const dialogVisible = ref(false)
+const formDialogRef = ref(null)
+
+// 新增分类按钮点击事件
+const addCategoryBtnClick = () => {
+    formDialogRef.value.open()
+}
 
 
 // 表单引用
@@ -201,14 +204,15 @@ const onSubmit = () => {
             console.log('表单验证不通过')
             return false
         }
-
+        // 
+        formDialogRef.value.showBtnLoading()
         addCategory(form).then((res) => {
             if (res.success == true) {
                 showMessage('添加成功')
                 // 将表单中分类名称置空
                 form.name = ''
                 // 隐藏对话框
-                dialogVisible.value = false
+                formDialogRef.value.close()
                 // 重新请求分页接口，渲染数据
                 getTableData()
             } else {
@@ -217,13 +221,14 @@ const onSubmit = () => {
                 // 提示错误消息
                 showMessage(message, 'error')
             }
-        })
+        }).finally(() => formDialogRef.value.closeBtnLoading())
 
     })
 }
 
+// 删除分类
 const deleteCategorySubmit = (row) => {
-    console.log(row.id)
+    console.log(row)
     showModel('是否确定要删除该分类？').then(() => {
         deleteCategory(row.id).then((res) => {
             if (res.success == true) {
