@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suoyike.weblog.common.domain.dos.TagDO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,5 +40,20 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
         return selectPage(page, wrapper);
     }
+
+    /**
+     * 根据标签模糊查询
+     * @param key
+     * @return
+     */
+    default List<TagDO> selectByKey(String key) {
+        LambdaQueryWrapper<TagDO> wrapper = new LambdaQueryWrapper<>();
+
+        // 构造模糊查询的条件
+        wrapper.like(TagDO::getName, key).orderByDesc(TagDO::getCreateTime);
+
+        return selectList(wrapper);
+    }
+
 }
 

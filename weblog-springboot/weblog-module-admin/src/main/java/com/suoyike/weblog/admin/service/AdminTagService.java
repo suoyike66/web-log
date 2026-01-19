@@ -3,6 +3,7 @@ package com.suoyike.weblog.admin.service;
 import com.suoyike.weblog.admin.model.vo.tag.AddTagReqVO;
 import com.suoyike.weblog.admin.model.vo.tag.DeleteTagReqVO;
 import com.suoyike.weblog.admin.model.vo.tag.FindTagPageListReqVO;
+import com.suoyike.weblog.admin.model.vo.tag.SearchTagsReqVO;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
 
@@ -34,5 +35,12 @@ public interface AdminTagService {
      * @return
      */
     Response deleteTag(DeleteTagReqVO deleteTagReqVO);
+
+    /**
+     * 根据标签关键词模糊查询
+     * @param searchTagsReqVO
+     * @return
+     */
+    Response searchTags(SearchTagsReqVO searchTagsReqVO);
 }
 
