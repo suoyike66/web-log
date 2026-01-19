@@ -42,7 +42,7 @@
 
             <!-- 登录用户头像 -->
             <el-dropdown class="flex items-center justify-center" @command="handleCommand">
-                				<span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
+               				<span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
                     <!-- 头像 Avatar -->
                     <el-avatar class="mr-2" :size="25"
                         src="https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg" />
@@ -61,7 +61,7 @@
         </div>
     </div>
 	<!-- 修改密码 -->
-    <FormDialog ref="formDialogRef" title="修改密码" width="40%" :destroy-on-close="true" @submit="onSubmit">
+    <el-dialog v-model="dialogVisible" title="修改密码" width="40%" :draggable ="true" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="formRef" :rules="rules" :model="form">
                     <el-form-item label="用户名" label-width="120px">
                         <!-- 输入框组件 -->
@@ -76,7 +76,15 @@
                              clearable show-password />
                     </el-form-item>
                 </el-form>
-    </FormDialog>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="onSubmit">
+                    提交
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script setup>
 import { ref, reactive, watch } from 'vue'
@@ -88,7 +96,6 @@ import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { showMessage, showModel} from '@/composables/util'
 import { updateAdminPassword } from '@/api/admin/user'
-import FormDialog from '@/components/FormDialog.vue'
 
     // 引入了用户 Store
     const userStore = useUserStore()
@@ -97,8 +104,8 @@ import FormDialog from '@/components/FormDialog.vue'
     const { isFullscreen, toggle } = useFullscreen()
     // 引入了菜单 store
     const menuStore = useMenuStore()
-    // 对话框引用
-    const formDialogRef = ref(null)
+    // 对话框是否显示
+    const dialogVisible = ref(false)
     // 表单引用
     const formRef = ref(null)
 
@@ -151,8 +158,6 @@ import FormDialog from '@/components/FormDialog.vue'
                 return
             }
 
-            // 显示按钮 loading
-            formDialogRef.value.showBtnLoading()
             // 调用修改用户密码接口
             updateAdminPassword(form).then((res) => {
                 console.log(res)
@@ -163,7 +168,7 @@ import FormDialog from '@/components/FormDialog.vue'
                     userStore.logout()
 
                     // 隐藏对话框
-                    formDialogRef.value.close()
+                    dialogVisible.value = false
 
                     // 跳转登录页
                     router.push('/login')
@@ -173,9 +178,6 @@ import FormDialog from '@/components/FormDialog.vue'
                     // 提示消息
                     showMessage(message, 'error')
                 }
-            }).finally(() => {
-                // 隐藏按钮 loading
-                formDialogRef.value.closeBtnLoading()
             })
         })
     }   
@@ -193,7 +195,7 @@ import FormDialog from '@/components/FormDialog.vue'
         // 更新密码
         if (command == 'updatePassword') {
             // 显示修改密码对话框
-            formDialogRef.value.open()
+            dialogVisible.value = true
         } else if (command == 'logout') { // 退出登录
             logout()
         }
