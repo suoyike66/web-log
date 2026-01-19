@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.service;
 
 import com.suoyike.weblog.admin.model.vo.tag.AddTagReqVO;
+import com.suoyike.weblog.admin.model.vo.tag.DeleteTagReqVO;
 import com.suoyike.weblog.admin.model.vo.tag.FindTagPageListReqVO;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
@@ -26,5 +27,12 @@ public interface AdminTagService {
      * @return
      */
     PageResponse findTagPageList(FindTagPageListReqVO findTagPageListReqVO);
+
+    /**
+     * 删除标签
+     * @param deleteTagReqVO
+     * @return
+     */
+    Response deleteTag(DeleteTagReqVO deleteTagReqVO);
 }
 
