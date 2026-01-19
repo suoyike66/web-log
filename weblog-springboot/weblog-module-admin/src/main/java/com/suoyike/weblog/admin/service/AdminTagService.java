@@ -1,6 +1,8 @@
 package com.suoyike.weblog.admin.service;
 
 import com.suoyike.weblog.admin.model.vo.tag.AddTagReqVO;
+import com.suoyike.weblog.admin.model.vo.tag.FindTagPageListReqVO;
+import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
 
 /**
@@ -17,5 +19,12 @@ public interface AdminTagService {
      * @return
      */
     Response addTags(AddTagReqVO addTagReqVO);
+
+    /**
+     * 查询标签分页
+     * @param findTagPageListReqVO
+     * @return
+     */
+    PageResponse findTagPageList(FindTagPageListReqVO findTagPageListReqVO);
 }
 

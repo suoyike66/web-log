@@ -1,8 +1,10 @@
 package com.suoyike.weblog.admin.controller;
 
 import com.suoyike.weblog.admin.model.vo.tag.AddTagReqVO;
+import com.suoyike.weblog.admin.model.vo.tag.FindTagPageListReqVO;
 import com.suoyike.weblog.admin.service.AdminTagService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
+import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,13 +38,13 @@ public class AdminTagController {
         return tagService.addTags(addTagReqVO);
     }
 
-//    @PostMapping("/tag/list")
-//    @ApiOperation(value = "标签分页数据获取")
-//    @ApiOperationLog(description = "标签分页数据获取")
-//    public PageResponse findCategoryList(@RequestBody @Validated FindCategoryPageListReqVO findCategoryPageListReqVO) {
-//        return categoryService.findCategoryList(findCategoryPageListReqVO);
-//    }
-//
+    @PostMapping("/tag/list")
+    @ApiOperation(value = "标签分页数据获取")
+    @ApiOperationLog(description = "标签分页数据获取")
+    public PageResponse findTagPageList(@RequestBody @Validated FindTagPageListReqVO findTagPageListReqVO) {
+        return tagService.findTagPageList(findTagPageListReqVO);
+    }
+
 //    @PostMapping("/tag/delete")
 //    @ApiOperation(value = "删除标签")
 //    @ApiOperationLog(description = "删除标签")

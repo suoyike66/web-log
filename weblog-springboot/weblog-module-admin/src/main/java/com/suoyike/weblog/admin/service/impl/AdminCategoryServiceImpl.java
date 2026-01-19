@@ -1,6 +1,5 @@
 package com.suoyike.weblog.admin.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suoyike.weblog.admin.model.vo.category.AddCategoryReqVO;
 import com.suoyike.weblog.admin.model.vo.category.DeleteCategoryReqVO;
@@ -9,10 +8,12 @@ import com.suoyike.weblog.admin.model.vo.category.FindCategoryPageListRspVO;
 import com.suoyike.weblog.admin.service.AdminCategoryService;
 import com.suoyike.weblog.common.domain.dos.CategoryDO;
 import com.suoyike.weblog.common.domain.mapper.CategoryMapper;
+import com.suoyike.weblog.common.enums.ResponseCodeEnum;
+import com.suoyike.weblog.common.exception.BizException;
 import com.suoyike.weblog.common.model.vo.SelectRspVO;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * @description: TODO
  **/
 @Service
+@Slf4j
 public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Autowired
@@ -42,13 +44,23 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
      */
     @Override
     public Response addCategory(AddCategoryReqVO addCategoryReqVO) {
+        String categoryName = addCategoryReqVO.getName();
+
+        // 先判断该分类是否已经存在
+        CategoryDO categoryDO = categoryMapper.selectByName(categoryName);
+
+        if (Objects.nonNull(categoryDO)) {
+            log.warn("分类名称： {}, 此已存在", categoryName);
+            throw new BizException(ResponseCodeEnum.CATEGORY_NAME_IS_EXISTED);
+        }
+
         // 构建 DO 类
-        CategoryDO categoryDO = CategoryDO.builder()
-                .name(addCategoryReqVO.getName())
+        CategoryDO insertCategoryDO = CategoryDO.builder()
+                .name(addCategoryReqVO.getName().trim())
                 .build();
 
         // 执行 insert
-        categoryMapper.insert(categoryDO);
+        categoryMapper.insert(insertCategoryDO);
 
         return Response.success();
     }
@@ -60,35 +72,16 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
      * @return
      */
     @Override
-    public PageResponse findCategoryList(FindCategoryPageListReqVO findCategoryPageListReqVO) {
+    public PageResponse findCategoryPageList(FindCategoryPageListReqVO findCategoryPageListReqVO) {
         // 获取当前页、以及每页需要展示的数据数量
         Long current = findCategoryPageListReqVO.getCurrent();
         Long size = findCategoryPageListReqVO.getSize();
-        
-        // 限制每页最大数据量，防止恶意请求
-        final Long MAX_PAGE_SIZE = 100L;
-        if (size == null || size <= 0 || size > MAX_PAGE_SIZE) {
-            size = Math.min(MAX_PAGE_SIZE, 10L); // 默认10条，不超过最大限制
-        }
-        
-        // 分页对象(查询第几页、每页多少数据)
-        Page<CategoryDO> page = new Page<>(current, size);
-
-        // 构建查询条件
-        LambdaQueryWrapper<CategoryDO> wrapper = new LambdaQueryWrapper<>();
-
         String name = findCategoryPageListReqVO.getName();
         LocalDate startDate = findCategoryPageListReqVO.getStartDate();
         LocalDate endDate = findCategoryPageListReqVO.getEndDate();
 
-        wrapper
-                .like(StringUtils.isNotBlank(name), CategoryDO::getName, name.trim()) // like 模块查询
-                .ge(Objects.nonNull(startDate), CategoryDO::getCreateTime, startDate) // 大于等于 startDate
-                .le(Objects.nonNull(endDate), CategoryDO::getCreateTime, endDate)  // 小于等于 endDate
-                .orderByDesc(CategoryDO::getCreateTime); // 按创建时间倒叙
-
         // 执行分页查询
-        Page<CategoryDO> categoryDOPage = categoryMapper.selectPage(page, wrapper);
+        Page<CategoryDO> categoryDOPage = categoryMapper.selectPageList(current, size, name, startDate, endDate);
 
         List<CategoryDO> categoryDOS = categoryDOPage.getRecords();
 
@@ -107,6 +100,12 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         return PageResponse.success(categoryDOPage, vos);
     }
 
+    /**
+     * 删除分类
+     *
+     * @param deleteCategoryReqVO
+     * @return
+     */
     @Override
     public Response deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO) {
         // 分类 ID
@@ -118,6 +117,11 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         return Response.success();
     }
 
+    /**
+     * 获取文章分类的 Select 列表数据
+     *
+     * @return
+     */
     @Override
     public Response findCategorySelectList() {
         // 查询所有分类
@@ -138,6 +142,5 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
         return Response.success(selectRspVOS);
     }
-
 
 }
