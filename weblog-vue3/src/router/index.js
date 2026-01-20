@@ -13,6 +13,7 @@ import AdminTagList from '@/pages/admin/tag-list.vue'
 import AdminBlogSettings from '@/pages/admin/blog-setting.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Admin from '@/layouts/admin/admin.vue'
+import NotFound from '@/pages/frontend/404.vue'
 
 // 统一在这里声明所有路由
 const routes = [
@@ -70,6 +71,14 @@ const routes = [
     component: Login,
     meta: {
       title: 'Weblog 登录页'
+    }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: {
+      title: '404 页'
     }
   },
   {
