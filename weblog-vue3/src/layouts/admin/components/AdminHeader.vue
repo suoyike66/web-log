@@ -22,11 +22,12 @@
                     </div>
                 </el-tooltip>
 
-                <!-- 跳转前台按钮 -->
+                <!-- 点击跳转前台首页 -->
                 <el-tooltip class="box-item" effect="dark" content="跳转前台" placement="bottom">
-                    <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 mr-2 hover:bg-gray-200" @click="handleJumpToFrontend">
+                    <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 hover:bg-gray-200"
+                        @click="router.push('/')">
                         <el-icon>
-                            <Grid />
+                            <Monitor />
                         </el-icon>
                     </div>
                 </el-tooltip>

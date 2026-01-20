@@ -41,7 +41,7 @@
                         class="text-white ml-2 mr-2 md:mr-0 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         type="button">
                         <!-- 用户登录头像 -->
-                        <img class="w-8 h-8 rounded-full" :src="blogSettingsStore.blogSettings.avatar" alt="user photo">
+                        <img class="w-8 h-8 rounded-full" :src="userStore.userInfo.avatar || blogSettingsStore.blogSettings.avatar" alt="user photo">
                     </button>
 
                     <!-- Dropdown menu -->
@@ -169,7 +169,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { initCollapses, initDropdowns, initModals } from 'flowbite'
 import { useBlogSettingsStore } from '@/stores/blogsettings'
 import { useUserStore } from '@/stores/user'
@@ -183,6 +183,8 @@ onMounted(() => {
     initModals();
     // 获取博客设置信息
     blogSettingsStore.getBlogSettings();
+    // 获取用户信息
+    userStore.setUserInfo();
 })
 
 const router = useRouter()
@@ -196,16 +198,12 @@ const blogSettingsStore = useBlogSettingsStore()
 
 // 是否登录，通过 userStore 中的 userInfo 对象是否有数据来判断
 const userStore = useUserStore()
-// 获取 userInfo 对象所有属性名称的数组
-const keys = Object.keys(userStore.userInfo)
-// 若大于零，则表示用户已登录
-const isLogined = ref(keys.length > 0)
+// 若 userInfo 对象有属性，则表示用户已登录
+const isLogined = computed(() => Object.keys(userStore.userInfo).length > 0)
 
 // 退出登录
 const logout = () => {
     userStore.logout()
-    // 标记为未登录
-    isLogined.value = false
     showMessage('退出登录成功')
 }
 </script>
