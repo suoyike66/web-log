@@ -1,9 +1,6 @@
 package com.suoyike.weblog.admin.controller;
 
-import com.suoyike.weblog.admin.model.vo.article.DeleteArticleReqVO;
-import com.suoyike.weblog.admin.model.vo.article.FindArticleDetailReqVO;
-import com.suoyike.weblog.admin.model.vo.article.FindArticlePageListReqVO;
-import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
+import com.suoyike.weblog.admin.model.vo.article.*;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
@@ -60,6 +57,15 @@ public class AdminArticleController {
     public Response findArticleDetail(@RequestBody @Validated FindArticleDetailReqVO findArticlePageListReqVO) {
         return articleService.findArticleDetail(findArticlePageListReqVO);
     }
+
+    @PostMapping("/update")
+    @ApiOperation(value = "更新文章")
+    @ApiOperationLog(description = "更新文章")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response updateArticle(@RequestBody @Validated UpdateArticleReqVO updateArticleReqVO) {
+        return articleService.updateArticle(updateArticleReqVO);
+    }
+
 
 
 }
