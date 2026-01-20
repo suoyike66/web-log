@@ -84,4 +84,17 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
                 .gt(ArticleDO::getId, articleId) // 查询比当前文章 ID 大的
                 .last("limit 1")); // 第一条记录即为下一篇文章
     }
+
+    /**
+     * 阅读量+1
+     * @param articleId
+     * @return
+     */
+    default int increaseReadNum(Long articleId) {
+        // 执行 SQL : UPDATE t_article SET read_num = read_num + 1 WHERE (id = XX)
+        return update(null, Wrappers.<ArticleDO>lambdaUpdate()
+                .setSql("read_num = read_num + 1")
+                .eq(ArticleDO::getId, articleId));
+    }
+
 }
