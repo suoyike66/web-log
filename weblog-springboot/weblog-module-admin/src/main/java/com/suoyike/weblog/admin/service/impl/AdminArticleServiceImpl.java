@@ -1,7 +1,7 @@
 package com.suoyike.weblog.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Lists;
 import com.suoyike.weblog.admin.convert.ArticleDetailConvert;
 import com.suoyike.weblog.admin.model.vo.article.*;
 import com.suoyike.weblog.admin.service.AdminArticleService;
@@ -19,8 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -104,64 +103,62 @@ public class AdminArticleServiceImpl implements AdminArticleService {
      * @param publishTags
      */
     private void insertTags(Long articleId, List<String> publishTags) {
-        // 筛选提交的标签（表中不存在的标签）
-        List<String> notExistTags = null;
-        // 筛选提交的标签（表中已存在的标签）
-        List<String> existedTags = null;
-
-        // 查询出所有标签
-        List<TagDO> tagDOS = tagMapper.selectList(null);
-
-        // 如果表中还没有添加任何标签
-        if (CollectionUtils.isEmpty(tagDOS)) {
-            notExistTags = publishTags;
-        } else {
-            List<String> tagIds = tagDOS.stream().map(tagDO -> String.valueOf(tagDO.getId())).collect(Collectors.toList());
-            // 表中已添加相关标签，则需要筛选
-            // 通过标签 ID 来筛选，包含对应 ID 则表示提交的标签是表中存在的
-            existedTags = publishTags.stream().filter(publishTag -> tagIds.contains(publishTag)).collect(Collectors.toList());
-            // 否则则是不存在的
-            notExistTags = publishTags.stream().filter(publishTag -> !tagIds.contains(publishTag)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(publishTags)) {
+            return;
         }
 
-        // 将提交的上来的，已存在于表中的标签，文章-标签关联关系入库
-        if (!CollectionUtils.isEmpty(existedTags)) {
-            List<ArticleTagRelDO> articleTagRelDOS = Lists.newArrayList();
-            existedTags.forEach(tagId -> {
-                ArticleTagRelDO articleTagRelDO = ArticleTagRelDO.builder()
-                        .articleId(articleId)
-                        .tagId(Long.valueOf(tagId))
-                        .build();
-                articleTagRelDOS.add(articleTagRelDO);
-            });
-            // 批量插入
-            articleTagRelMapper.insertBatchSomeColumn(articleTagRelDOS);
+        // 去除空字符串和重复标签
+        Set<String> uniquePublishTags = publishTags.stream()
+                .map(String::trim)
+                .filter(tagName -> !tagName.isEmpty())
+                .collect(Collectors.toSet());
+        
+        if (uniquePublishTags.isEmpty()) {
+            return;
         }
 
-        // 将提交的上来的，不存在于表中的标签，入库保存
-        if (!CollectionUtils.isEmpty(notExistTags)) {
-            // 需要先将标签入库，拿到对应标签 ID 后，再把文章-标签关联关系入库
-            List<ArticleTagRelDO> articleTagRelDOS = Lists.newArrayList();
-            notExistTags.forEach(tagName -> {
-                TagDO tagDO = TagDO.builder()
-                        .name(tagName)
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
-                        .build();
+        // 查询数据库中已存在的标签
+        List<TagDO> existingTags = tagMapper.selectList(
+            new LambdaQueryWrapper<TagDO>().in(TagDO::getName, uniquePublishTags));
+        Set<String> existingTagNames = existingTags.stream()
+                .map(TagDO::getName)
+                .collect(Collectors.toSet());
+        Map<String, Long> existingTagNameToIdMap = existingTags.stream()
+                .collect(Collectors.toMap(TagDO::getName, TagDO::getId));
 
-                tagMapper.insert(tagDO);
+        // 分离需要插入的新标签和已存在的标签
+        Set<String> newTagNames = uniquePublishTags.stream()
+                .filter(tagName -> !existingTagNames.contains(tagName))
+                .collect(Collectors.toSet());
 
-                // 拿到保存的标签 ID
-                Long tagId = tagDO.getId();
+        // 插入新标签
+        List<TagDO> newTagDOS = new ArrayList<>();
+        for (String tagName : newTagNames) {
+            TagDO tagDO = TagDO.builder()
+                    .name(tagName)
+                    .createTime(LocalDateTime.now())
+                    .updateTime(LocalDateTime.now())
+                    .build();
+            // 先单独插入每个标签以获取其ID
+            tagMapper.insert(tagDO);
+            // 直接添加到映射中
+            existingTagNameToIdMap.put(tagDO.getName(), tagDO.getId());
+        }
 
-                // 文章-标签关联关系
+        // 创建文章-标签关联关系
+        List<ArticleTagRelDO> articleTagRelDOS = new ArrayList<>();
+        for (String tagName : uniquePublishTags) {
+            Long tagId = existingTagNameToIdMap.get(tagName);
+            if (tagId != null) {
                 ArticleTagRelDO articleTagRelDO = ArticleTagRelDO.builder()
                         .articleId(articleId)
                         .tagId(tagId)
                         .build();
                 articleTagRelDOS.add(articleTagRelDO);
-            });
-            // 批量插入
+            }
+        }
+
+        if (!articleTagRelDOS.isEmpty()) {
             articleTagRelMapper.insertBatchSomeColumn(articleTagRelDOS);
         }
     }
