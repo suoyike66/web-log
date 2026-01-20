@@ -1,18 +1,19 @@
 import Index from '@/pages/frontend/index.vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '@/pages/admin/login.vue'
 import AdminIndex from '@/pages/admin/index.vue'
-import Admin from '@/layouts/admin/admin.vue'
 import AdminArticleList from '@/pages/admin/article-list.vue'
 import AdminCategoryList from '@/pages/admin/category-list.vue'
 import AdminTagList from '@/pages/admin/tag-list.vue'
 import AdminBlogSetting from '@/pages/admin/blog-setting.vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Admin from '@/layouts/admin/admin.vue'
 import { getToken } from '@/composables/cookie'
 import { showMessage } from '@/composables/util'
+
 // 统一在这里声明所有路由
 const routes = [
   {
-    path: '/', // 路由地址
+    path: '/', // 路由地址，首页
     component: Index, // 对应组件
     meta: { // meta 信息
       title: 'Weblog 首页' // 页面标题
@@ -27,7 +28,7 @@ const routes = [
   },
   {
     path: "/admin", // 后台首页
-    component: Admin, // 对应 admin.vue 布局文件
+    component: Admin,
     // 使用到 admin.vue 布局的，都需要放置在其子路由下面
     children: [
       {
@@ -66,7 +67,8 @@ const routes = [
         }
       },
     ]
-  },
+
+  }
 ]
 
 // 创建路由
@@ -96,5 +98,5 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-// ES6 模块导出语句，它用于将 router 对象导出，以便其他文件可以导入和使用这个对象
+// 暴露出去
 export default router
