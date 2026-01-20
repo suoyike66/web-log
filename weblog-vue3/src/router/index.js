@@ -1,16 +1,18 @@
 import Index from '@/pages/frontend/index.vue'
+import ArchiveList from '@/pages/frontend/archive-list.vue'
+import CategoryList from '@/pages/frontend/category-list.vue'
+import CategoryArticleList from '@/pages/frontend/category-article-list.vue'
+import TagList from '@/pages/frontend/tag-list.vue'
+import TagArticleList from '@/pages/frontend/tag-article-list.vue'
+import ArticleDetail from '@/pages/frontend/article-detail.vue'
 import Login from '@/pages/admin/login.vue'
 import AdminIndex from '@/pages/admin/index.vue'
 import AdminArticleList from '@/pages/admin/article-list.vue'
 import AdminCategoryList from '@/pages/admin/category-list.vue'
 import AdminTagList from '@/pages/admin/tag-list.vue'
-import AdminBlogSetting from '@/pages/admin/blog-setting.vue'
+import AdminBlogSettings from '@/pages/admin/blog-setting.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Admin from '@/layouts/admin/admin.vue'
-import { getToken } from '@/composables/cookie'
-import { showMessage } from '@/composables/util'
-import ArchiveList from '@/pages/frontend/archive-list.vue'
-import CategoryList from '@/pages/frontend/category-list.vue'
 
 // 统一在这里声明所有路由
 const routes = [
@@ -29,10 +31,38 @@ const routes = [
     }
   },
   {
-    path: '/category/list', // 分类页
+    path: '/category/list', // 分类列表页
     component: CategoryList,
     meta: { // meta 信息
-      title: 'Weblog 分类页'
+      title: 'Weblog 分类列表页'
+    }
+  },
+  {
+    path: '/category/article/list', // 分类文章页
+    component: CategoryArticleList,
+    meta: { // meta 信息
+      title: 'Weblog 分类文章页'
+    }
+  },
+  {
+    path: '/tag/list', // 标签列表页
+    component: TagList,
+    meta: { // meta 信息
+      title: 'Weblog 标签列表页'
+    }
+  },
+  {
+    path: '/tag/article/list', // 标签列表页
+    component: TagArticleList,
+    meta: { // meta 信息
+      title: 'Weblog 标签文章页'
+    }
+  },
+  {
+    path: '/article/:articleId', // 文章详情页
+    component: ArticleDetail,
+    meta: { // meta 信息
+      title: 'Weblog 详情页'
     }
   },
   {
@@ -77,7 +107,7 @@ const routes = [
       },
       {
         path: "/admin/blog/setting",
-        component: AdminBlogSetting,
+        component: AdminBlogSettings,
         meta: {
           title: '博客设置'
         }
@@ -95,24 +125,6 @@ const router = createRouter({
   routes,
 })
 
-// 全局路由前置守卫
-router.beforeEach((to, from, next) => {
-  // 获取 token
-  const token = getToken()
-
-  // 检查是否是访问需要登录的页面（这里假设所有 /admin 开头的路由都需要登录）
-  if (to.path.startsWith('/admin')) {
-    // 如果没有 token，提示用户并跳转到登录页
-    if (!token) {
-      showMessage('请先登录', 'warning')
-      next('/login')
-      return
-    }
-  }
-
-  // 继续路由导航
-  next()
-})
-
 // 暴露出去
 export default router
+

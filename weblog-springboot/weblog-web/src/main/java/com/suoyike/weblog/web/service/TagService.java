@@ -1,6 +1,7 @@
 package com.suoyike.weblog.web.service;
 
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.model.vo.tag.FindTagArticlePageListReqVO;
 
 /**
  * @author: 蓑衣客
@@ -14,4 +15,11 @@ public interface TagService {
      * @return
      */
     Response findTagList();
+
+    /**
+     * 获取标签下文章分页列表
+     * @param findTagArticlePageListReqVO
+     * @return
+     */
+    Response findTagPageList(FindTagArticlePageListReqVO findTagArticlePageListReqVO);
 }

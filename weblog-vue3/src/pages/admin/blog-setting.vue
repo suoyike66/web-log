@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { Check, Close } from '@element-plus/icons-vue'
 import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
 import { uploadFile } from '@/api/admin/file'
@@ -145,14 +145,16 @@ const csdnSwitchChange = (checked) => {
 
 // 初始化博客设置数据，并渲染到页面上
 function initBlogSettings() {
+    console.log('开始初始化博客设置')
     getBlogSettingsDetail().then((e) => {
-        if (e.success == true) {
+        console.log('获取博客设置详情:', e)
+        if (e && e.success == true) {
             // 设置表单数据
-            form.name = e.data.name
-            form.author = e.data.author
-            form.logo = e.data.logo
-            form.avatar = e.data.avatar
-            form.introduction = e.data.introduction
+            form.name = e.data.name || ''
+            form.author = e.data.author || ''
+            form.logo = e.data.logo || ''
+            form.avatar = e.data.avatar || ''
+            form.introduction = e.data.introduction || ''
 
             // 第三方平台信息设置
             if (e.data.githubHomepage) {
@@ -174,12 +176,21 @@ function initBlogSettings() {
                 isCSDNChecked.value = true
                 form.csdnHomepage = e.data.csdnHomepage
             }
+        } else {
+            console.error('获取博客设置失败:', e)
+            showMessage('获取博客设置失败', 'error')
         }
-    }).catch(() => {
+    }).catch((error) => {
+        console.error('获取博客设置时发生错误:', error)
         showMessage('获取博客设置失败', 'error')
     })
 }
-initBlogSettings()
+
+// 组件挂载后初始化数据
+onMounted(() => {
+    console.log('组件挂载完成，开始初始化数据')
+    initBlogSettings()
+})
 
 // 上传 logo 图片
 const handleLogoChange = (file) => {
