@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.service;
 
 import com.suoyike.weblog.admin.model.vo.article.DeleteArticleReqVO;
+import com.suoyike.weblog.admin.model.vo.article.FindArticleDetailReqVO;
 import com.suoyike.weblog.admin.model.vo.article.FindArticlePageListReqVO;
 import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
 import com.suoyike.weblog.common.utils.Response;
@@ -32,5 +33,12 @@ public interface AdminArticleService {
      * @return
      */
     Response findArticlePageList(FindArticlePageListReqVO findArticlePageListReqVO);
+
+    /**
+     * 查询文章详情
+     * @param findArticleDetailReqVO
+     * @return
+     */
+    Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO);
 
 }
