@@ -134,16 +134,17 @@
 
             <!-- 右边侧边栏，占用一列 -->
             <aside class="col-span-4 md:col-span-1">
-                <div class="sticky top-[5.5rem]">
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
+                <!-- 博主信息 -->
+                <UserInfoCard></UserInfoCard>
 
-                    <!-- 分类 -->
-                    <CategoryListCard></CategoryListCard>
+                <!-- 分类 -->
+                <CategoryListCard></CategoryListCard>
 
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
-                </div>
+                <!-- 标签 -->
+                <TagListCard></TagListCard>
+
+                <!-- 文章目录 -->
+                <Toc></Toc>
             </aside>
         </div>
 
@@ -166,6 +167,7 @@ import { ref, watch, nextTick, onMounted } from 'vue'
 import Viewer from 'viewerjs'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
+import Toc from '@/layouts/frontend/components/Toc.vue'
 
 const route = useRoute()
 const router = useRouter()
