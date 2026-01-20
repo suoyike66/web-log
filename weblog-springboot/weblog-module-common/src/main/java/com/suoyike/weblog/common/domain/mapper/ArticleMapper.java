@@ -51,24 +51,37 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
      */
     default Page<ArticleDO> selectPageListByArticleIds(Long current, Long size, List<Long> articleIds) {
         // 分页对象(查询第几页、每页多少数据)
-        Page<ArticleDO> page = new Page<>(
-            Objects.nonNull(current) ? current : 1L,
-            Objects.nonNull(size) ? size : 10L
-        );
+        Page<ArticleDO> page = new Page<>(current, size);
 
         // 构建查询条件
-        LambdaQueryWrapper<ArticleDO> wrapper = Wrappers.<ArticleDO>lambdaQuery();
-        
-        // 只有在 articleIds 非空且非空列表的情况下才添加 in 条件
-        if (Objects.nonNull(articleIds) && !articleIds.isEmpty()) {
-            wrapper.in(ArticleDO::getId, articleIds);
-        } else {
-            // 如果 articleIds 为空或 null，则返回空结果集
-            wrapper.apply("1 = 0"); // 这将确保不返回任何记录
-        }
-        
-        wrapper.orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
+        LambdaQueryWrapper<ArticleDO> wrapper = Wrappers.<ArticleDO>lambdaQuery()
+                .in(ArticleDO::getId, articleIds)
+                .orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
 
         return selectPage(page, wrapper);
+    }
+
+    /**
+     * 查询上一篇文章
+     * @param articleId
+     * @return
+     */
+    default ArticleDO selectPreArticle(Long articleId) {
+        return selectOne(Wrappers.<ArticleDO>lambdaQuery()
+                .orderByDesc(ArticleDO::getId) // 按文章 ID 降序排列
+                .lt(ArticleDO::getId, articleId) // 查询比当前文章 ID 小的
+                .last("limit 1")); // 第一条记录即为上一篇文章
+    }
+
+    /**
+     * 查询下一篇文章
+     * @param articleId
+     * @return
+     */
+    default ArticleDO selectNextArticle(Long articleId) {
+        return selectOne(Wrappers.<ArticleDO>lambdaQuery()
+                .orderByAsc(ArticleDO::getId) // 按文章 ID 升序排列
+                .gt(ArticleDO::getId, articleId) // 查询比当前文章 ID 大的
+                .last("limit 1")); // 第一条记录即为下一篇文章
     }
 }

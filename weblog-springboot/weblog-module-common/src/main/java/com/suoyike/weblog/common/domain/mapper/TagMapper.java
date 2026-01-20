@@ -2,6 +2,7 @@ package com.suoyike.weblog.common.domain.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suoyike.weblog.common.domain.dos.TagDO;
 
@@ -16,15 +17,15 @@ import java.util.Objects;
  * @description: TODO 标签 Mapper
  **/
 public interface TagMapper extends BaseMapper<TagDO> {
+
     /**
-     * 根据条件查询标签列表
-     *
-     * @param current 当前页
-     * @param size  每页大小
-     * @param name  标签名
-     * @param startDate 开始时间
-     * @param endDate   结束时间
-     * @return 标签列表
+     * 分页查询
+     * @param current
+     * @param size
+     * @param name
+     * @param startDate
+     * @param endDate
+     * @return
      */
     default Page<TagDO> selectPageList(long current, long size, String name, LocalDate startDate, LocalDate endDate) {
         // 分页对象
@@ -55,5 +56,14 @@ public interface TagMapper extends BaseMapper<TagDO> {
         return selectList(wrapper);
     }
 
+    /**
+     * 根据标签 ID 批量查询
+     * @param tagIds
+     * @return
+     */
+    default List<TagDO> selectByIds(List<Long> tagIds) {
+        return selectList(Wrappers.<TagDO>lambdaQuery()
+                .in(TagDO::getId, tagIds));
+    }
 }
 

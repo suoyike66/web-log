@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.suoyike.weblog.common.domain.dos.*;
 import com.suoyike.weblog.common.domain.mapper.*;
+import com.suoyike.weblog.common.enums.ResponseCodeEnum;
+import com.suoyike.weblog.common.exception.BizException;
 import com.suoyike.weblog.common.utils.PageResponse;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.convert.ArticleConvert;
-import com.suoyike.weblog.web.model.vo.article.FindIndexArticlePageListReqVO;
-import com.suoyike.weblog.web.model.vo.article.FindIndexArticlePageListRspVO;
+import com.suoyike.weblog.web.markdown.MarkdownHelper;
+import com.suoyike.weblog.web.model.vo.article.*;
 import com.suoyike.weblog.web.model.vo.category.FindCategoryListRspVO;
 import com.suoyike.weblog.web.model.vo.tag.FindTagListRspVO;
 import com.suoyike.weblog.web.service.ArticleService;
@@ -18,16 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author: 犬小哈
- * @url: www.quanxiaoha.com
- * @date: 2023-09-15 14:03
+ * @author: 蓑衣客
+ * @url: www.suoyike.com
+ * @date: 2026-01-20 18:03
  * @description: 文章
  **/
 @Service
@@ -36,6 +35,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleMapper articleMapper;
+    @Autowired
+    private ArticleContentMapper articleContentMapper;
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
@@ -133,5 +134,78 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return PageResponse.success(articleDOPage, vos);
+    }
+
+    /**
+     * 获取文章详情
+     *
+     * @param findArticleDetailReqVO
+     * @return
+     */
+    @Override
+    public Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO) {
+        Long articleId = findArticleDetailReqVO.getId();
+
+        ArticleDO articleDO = articleMapper.selectById(articleId);
+
+        // 判断文章是否存在
+        if (Objects.isNull(articleDO)) {
+            log.warn("==> 该文章不存在, articleId: {}", articleId);
+            throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        // 查询正文
+        ArticleContentDO articleContentDO = articleContentMapper.selectByArticleId(articleId);
+
+        // DO 转 VO
+        FindArticleDetailRspVO vo = FindArticleDetailRspVO.builder()
+                .id(articleDO.getId())
+                .title(articleDO.getTitle())
+                .createTime(articleDO.getCreateTime())
+                .content(MarkdownHelper.convertMarkdown2Html(articleContentDO.getContent()))
+                .readNum(articleDO.getReadNum())
+                .build();
+
+        // 查询所属分类
+        ArticleCategoryRelDO articleCategoryRelDO = articleCategoryRelMapper.selectByArticleId(articleId);
+        CategoryDO categoryDO = categoryMapper.selectById(articleCategoryRelDO.getCategoryId());
+        vo.setCategoryId(categoryDO.getId());
+        vo.setCategoryName(categoryDO.getName());
+
+        // 查询标签
+        List<ArticleTagRelDO> articleTagRelDOS = articleTagRelMapper.selectByArticleId(articleId);
+        List<Long> tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        List<TagDO> tagDOS = new ArrayList<>();
+        if (!tagIds.isEmpty()) {
+            tagDOS = tagMapper.selectByIds(tagIds);
+        }
+
+        // 标签 DO 转 VO
+        List<FindTagListRspVO> tagVOS = tagDOS.stream()
+                .map(tagDO -> FindTagListRspVO.builder().id(tagDO.getId()).name(tagDO.getName()).build())
+                .collect(Collectors.toList());
+        vo.setTags(tagVOS);
+
+        // 上一篇
+        ArticleDO preArticleDO = articleMapper.selectPreArticle(articleId);
+        if (Objects.nonNull(preArticleDO)) {
+            FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(preArticleDO.getId())
+                    .articleTitle(preArticleDO.getTitle())
+                    .build();
+            vo.setPreArticle(preArticleVO);
+        }
+
+        // 下一篇
+        ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleId);
+        if (Objects.nonNull(nextArticleDO)) {
+            FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(nextArticleDO.getId())
+                    .articleTitle(nextArticleDO.getTitle())
+                    .build();
+            vo.setNextArticle(nextArticleVO);
+        }
+
+        return Response.success(vo);
     }
 }
