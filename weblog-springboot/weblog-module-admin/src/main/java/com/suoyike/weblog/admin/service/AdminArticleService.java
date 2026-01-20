@@ -1,0 +1,20 @@
+package com.suoyike.weblog.admin.service;
+
+import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
+import com.suoyike.weblog.common.utils.Response;
+
+/**
+ * @author: 蓑衣客
+ * @url: www.suoyike.com
+ * @date: 2026-01-20 11:22
+ * @description: 文章
+ **/
+public interface AdminArticleService {
+    /**
+     * 发布文章
+     * @param publishArticleReqVO
+     * @return
+     */
+    Response publishArticle(PublishArticleReqVO publishArticleReqVO);
+
+}
