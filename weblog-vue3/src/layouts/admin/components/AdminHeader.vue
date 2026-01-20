@@ -22,9 +22,9 @@
                     </div>
                 </el-tooltip>
 
-                <!-- 布局切换按钮 -->
-                <el-tooltip class="box-item" effect="dark" content="布局" placement="bottom">
-                    <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 mr-2 hover:bg-gray-200">
+                <!-- 跳转前台按钮 -->
+                <el-tooltip class="box-item" effect="dark" content="跳转前台" placement="bottom">
+                    <div class="w-[42px] h-[64px] cursor-pointer flex items-center justify-center text-gray-700 mr-2 hover:bg-gray-200" @click="handleJumpToFrontend">
                         <el-icon>
                             <Grid />
                         </el-icon>
@@ -191,6 +191,8 @@ import { updateAdminPassword } from '@/api/admin/user'
     }
     // 刷新页面
     const handleRefresh = () => location.reload()
+    // 跳转到前台
+    const handleJumpToFrontend = () => router.push('/')
 
     // 下拉菜单事件处理
     const handleCommand = (command) => {
