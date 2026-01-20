@@ -14,6 +14,7 @@ import java.util.List;
  **/
 public interface ArticleTagRelMapper extends InsertBatchMapper<ArticleTagRelDO> {
 
+
     /**
      * 根据文章 ID 删除关联记录
      * @param articleId
@@ -32,6 +33,17 @@ public interface ArticleTagRelMapper extends InsertBatchMapper<ArticleTagRelDO> 
     default List<ArticleTagRelDO> selectByArticleId(Long articleId) {
         return selectList(Wrappers.<ArticleTagRelDO>lambdaQuery()
                 .eq(ArticleTagRelDO::getArticleId, articleId));
+    }
+
+    /**
+     * 根据标签 ID 查询
+     * @param tagId
+     * @return
+     */
+    default ArticleTagRelDO selectOneByTagId(Long tagId) {
+        return selectOne(Wrappers.<ArticleTagRelDO>lambdaQuery()
+                .eq(ArticleTagRelDO::getTagId, tagId)
+                .last("LIMIT 1"));
     }
 
 }

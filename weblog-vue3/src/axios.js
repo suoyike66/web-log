@@ -1,6 +1,6 @@
 import axios from "axios";
 import { showMessage } from '@/composables/util'
-import { getToken } from '@/composables/cookie'
+import { getToken, removeToken } from '@/composables/cookie'
 // 创建 Axios 实例
 const instance = axios.create({
   baseURL: "/api", // 你的 API 基础 URL
@@ -33,12 +33,22 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
+  let status = error.response.status
 
+  // 状态码 401
+  if (status == 401) {
+    // 删除 cookie 中的令牌
+    removeToken()
+    // 刷新页面
+    location.reload()
+  }
+
+  // 若后台有错误提示就用提示文字，默认提示为 '请求失败'
+  let errorMsg = error.response.data.message || '请求失败'
   // 弹错误提示
-  showMessage('请求失败', 'error')
+  showMessage(errorMsg, 'error')
 
   return Promise.reject(error)
-
 })
 
 // 暴露出去

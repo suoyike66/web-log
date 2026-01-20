@@ -7,6 +7,8 @@ import AdminArticleList from '@/pages/admin/article-list.vue'
 import AdminCategoryList from '@/pages/admin/category-list.vue'
 import AdminTagList from '@/pages/admin/tag-list.vue'
 import AdminBlogSetting from '@/pages/admin/blog-setting.vue'
+import { getToken } from '@/composables/cookie'
+import { showMessage } from '@/composables/util'
 // 统一在这里声明所有路由
 const routes = [
   {
@@ -73,6 +75,25 @@ const router = createRouter({
   history: createWebHashHistory(),
   // routes: routes 的缩写
   routes,
+})
+
+// 全局路由前置守卫
+router.beforeEach((to, from, next) => {
+  // 获取 token
+  const token = getToken()
+
+  // 检查是否是访问需要登录的页面（这里假设所有 /admin 开头的路由都需要登录）
+  if (to.path.startsWith('/admin')) {
+    // 如果没有 token，提示用户并跳转到登录页
+    if (!token) {
+      showMessage('请先登录', 'warning')
+      next('/login')
+      return
+    }
+  }
+
+  // 继续路由导航
+  next()
 })
 
 // ES6 模块导出语句，它用于将 router 对象导出，以便其他文件可以导入和使用这个对象
