@@ -229,7 +229,7 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     /**
      * 查询文章详情
      *
-     * @param findArticlePageListReqVO
+     * @param findArticleDetailReqVO
      * @return
      */
     @Override
