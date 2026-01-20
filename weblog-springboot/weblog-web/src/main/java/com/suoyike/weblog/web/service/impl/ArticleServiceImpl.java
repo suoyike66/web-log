@@ -157,6 +157,12 @@ public class ArticleServiceImpl implements ArticleService {
         // 查询正文
         ArticleContentDO articleContentDO = articleContentMapper.selectByArticleId(articleId);
 
+        // 判断文章内容是否存在
+        if (Objects.isNull(articleContentDO)) {
+            log.warn("==> 该文章内容不存在, articleId: {}", articleId);
+            throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
+        }
+
         // DO 转 VO
         FindArticleDetailRspVO vo = FindArticleDetailRspVO.builder()
                 .id(articleDO.getId())
@@ -168,42 +174,60 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 查询所属分类
         ArticleCategoryRelDO articleCategoryRelDO = articleCategoryRelMapper.selectByArticleId(articleId);
-        CategoryDO categoryDO = categoryMapper.selectById(articleCategoryRelDO.getCategoryId());
-        vo.setCategoryId(categoryDO.getId());
-        vo.setCategoryName(categoryDO.getName());
+        if (Objects.nonNull(articleCategoryRelDO)) {
+            CategoryDO categoryDO = categoryMapper.selectById(articleCategoryRelDO.getCategoryId());
+            if (Objects.nonNull(categoryDO)) {
+                vo.setCategoryId(categoryDO.getId());
+                vo.setCategoryName(categoryDO.getName());
+            }
+        }
 
         // 查询标签
         List<ArticleTagRelDO> articleTagRelDOS = articleTagRelMapper.selectByArticleId(articleId);
-        List<Long> tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        List<Long> tagIds = new ArrayList<>();
+        if (Objects.nonNull(articleTagRelDOS)) {
+            tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        }
         List<TagDO> tagDOS = new ArrayList<>();
         if (!tagIds.isEmpty()) {
             tagDOS = tagMapper.selectByIds(tagIds);
         }
 
         // 标签 DO 转 VO
-        List<FindTagListRspVO> tagVOS = tagDOS.stream()
-                .map(tagDO -> FindTagListRspVO.builder().id(tagDO.getId()).name(tagDO.getName()).build())
-                .collect(Collectors.toList());
+        List<FindTagListRspVO> tagVOS = new ArrayList<>();
+        if (Objects.nonNull(tagDOS)) {
+            tagVOS = tagDOS.stream()
+                    .map(tagDO -> FindTagListRspVO.builder().id(tagDO.getId()).name(tagDO.getName()).build())
+                    .collect(Collectors.toList());
+        }
         vo.setTags(tagVOS);
 
         // 上一篇
-        ArticleDO preArticleDO = articleMapper.selectPreArticle(articleId);
-        if (Objects.nonNull(preArticleDO)) {
-            FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
-                    .articleId(preArticleDO.getId())
-                    .articleTitle(preArticleDO.getTitle())
-                    .build();
-            vo.setPreArticle(preArticleVO);
+        try {
+            ArticleDO preArticleDO = articleMapper.selectPreArticle(articleId);
+            if (Objects.nonNull(preArticleDO)) {
+                FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
+                        .articleId(preArticleDO.getId())
+                        .articleTitle(preArticleDO.getTitle())
+                        .build();
+                vo.setPreArticle(preArticleVO);
+            }
+        } catch (Exception e) {
+            log.warn("查询上一篇文章失败, articleId: {}", articleId, e);
         }
 
         // 下一篇
-        ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleId);
-        if (Objects.nonNull(nextArticleDO)) {
-            FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
-                    .articleId(nextArticleDO.getId())
-                    .articleTitle(nextArticleDO.getTitle())
-                    .build();
-            vo.setNextArticle(nextArticleVO);
+        try {
+            ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleId);
+            if (Objects.nonNull(nextArticleDO)) {
+                FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
+                        .articleId(nextArticleDO.getId())
+                        .articleTitle(nextArticleDO.getTitle())
+                        .build();
+                vo.setNextArticle(nextArticleVO);
+            }
+        } catch (Exception e) {
+            log.warn("查询下一篇文章失败, articleId: {}", articleId, e);
         }
 
         return Response.success(vo);

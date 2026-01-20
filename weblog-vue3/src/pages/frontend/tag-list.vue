@@ -2,7 +2,7 @@
     <Header></Header>
 
     <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4 px-6">
+    <main class="container max-w-screen-xl mx-auto p-4">
         <!-- grid 表格布局，分为 4 列 -->
         <div class="grid grid-cols-4 gap-7">
             <!-- 左边栏，占用 3 列 -->
@@ -37,11 +37,13 @@
 
             <!-- 右边侧边栏，占用一列 -->
             <aside class="col-span-4 md:col-span-1">
-                <!-- 博主信息 -->
-                <UserInfoCard></UserInfoCard>
+                <div class="sticky top-[5.5rem]">
+                    <!-- 博主信息 -->
+                    <UserInfoCard></UserInfoCard>
 
-                <!-- 分类 -->
-                <CategoryListCard></CategoryListCard>
+                    <!-- 分类 -->
+                    <CategoryListCard></CategoryListCard>
+                </div>
             </aside>
         </div>
 
@@ -72,6 +74,6 @@ getTagList().then((res) => {
 // 跳转标签文章列表页
 const goTagArticleListPage = (id, name) => {
     // 跳转时通过 query 携带参数（标签 ID、标签名称）
-    router.push({path: '/tag/article/list', query: {id, name}})
+    router.push({ path: '/tag/article/list', query: { id, name } })
 }
 </script>

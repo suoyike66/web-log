@@ -245,18 +245,29 @@ public class AdminArticleServiceImpl implements AdminArticleService {
 
         ArticleContentDO articleContentDO = articleContentMapper.selectByArticleId(articleId);
 
+        // 判断文章内容是否存在
+        if (Objects.isNull(articleContentDO)) {
+            log.warn("==> 该文章内容不存在, articleId: {}", articleId);
+            throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
+        }
+
         // 所属分类
         ArticleCategoryRelDO articleCategoryRelDO = articleCategoryRelMapper.selectByArticleId(articleId);
 
         // 对应标签
         List<ArticleTagRelDO> articleTagRelDOS = articleTagRelMapper.selectByArticleId(articleId);
         // 获取对应标签 ID 集合
-        List<Long> tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        List<Long> tagIds = new ArrayList<>();
+        if (Objects.nonNull(articleTagRelDOS)) {
+            tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        }
 
         // DO 转 VO
         FindArticleDetailRspVO vo = ArticleDetailConvert.INSTANCE.convertDO2VO(articleDO);
         vo.setContent(articleContentDO.getContent());
-        vo.setCategoryId(articleCategoryRelDO.getCategoryId());
+        if (Objects.nonNull(articleCategoryRelDO)) {
+            vo.setCategoryId(articleCategoryRelDO.getCategoryId());
+        }
         vo.setTagIds(tagIds);
 
         return Response.success(vo);

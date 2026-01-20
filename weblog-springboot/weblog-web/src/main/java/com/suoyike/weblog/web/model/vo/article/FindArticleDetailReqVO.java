@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author: 蓑衣客
  * @url: www.suoyike.com
@@ -21,5 +23,6 @@ public class FindArticleDetailReqVO {
     /**
      * 文章 ID
      */
+    @NotNull(message = "文章 ID 不能为空")
     private Long id;
 }

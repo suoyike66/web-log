@@ -8,6 +8,7 @@ import com.suoyike.weblog.web.service.ArticleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class ArticleController {
     @PostMapping("/detail")
     @ApiOperation(value = "获取文章详情")
     @ApiOperationLog(description = "获取文章详情")
-    public Response findArticleDetail(@RequestBody FindArticleDetailReqVO findArticleDetailReqVO) {
+    public Response findArticleDetail(@RequestBody @Validated FindArticleDetailReqVO findArticleDetailReqVO) {
         return articleService.findArticleDetail(findArticleDetailReqVO);
     }
 
