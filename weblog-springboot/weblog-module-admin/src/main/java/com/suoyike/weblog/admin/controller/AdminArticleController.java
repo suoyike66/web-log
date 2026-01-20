@@ -1,5 +1,6 @@
 package com.suoyike.weblog.admin.controller;
 
+import com.suoyike.weblog.admin.model.vo.article.DeleteArticleReqVO;
 import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
@@ -35,5 +36,14 @@ public class AdminArticleController {
     public Response publishArticle(@RequestBody @Validated PublishArticleReqVO publishArticleReqVO) {
         return articleService.publishArticle(publishArticleReqVO);
     }
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "文章删除")
+    @ApiOperationLog(description = "文章删除")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response deleteArticle(@RequestBody @Validated DeleteArticleReqVO deleteArticleReqVO) {
+        return articleService.deleteArticle(deleteArticleReqVO);
+    }
+
 
 }

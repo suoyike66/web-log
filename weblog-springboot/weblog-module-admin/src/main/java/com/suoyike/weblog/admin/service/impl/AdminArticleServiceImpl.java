@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.service.impl;
 
 import com.google.common.collect.Lists;
+import com.suoyike.weblog.admin.model.vo.article.DeleteArticleReqVO;
 import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.domain.dos.*;
@@ -161,4 +162,31 @@ public class AdminArticleServiceImpl implements AdminArticleService {
             articleTagRelMapper.insertBatchSomeColumn(articleTagRelDOS);
         }
     }
+
+    /**
+     * 删除文章
+     *
+     * @param deleteArticleReqVO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Response deleteArticle(DeleteArticleReqVO deleteArticleReqVO) {
+        Long articleId = deleteArticleReqVO.getId();
+
+        // 1. 删除文章
+        articleMapper.deleteById(articleId);
+
+        // 2. 删除文章内容
+        articleContentMapper.deleteByArticleId(articleId);
+
+        // 3. 删除文章-分类关联记录
+        articleCategoryRelMapper.deleteByArticleId(articleId);
+
+        // 4. 删除文章-标签关联记录
+        articleTagRelMapper.deleteByArticleId(articleId);
+
+        return Response.success();
+    }
+
 }
