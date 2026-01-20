@@ -5,6 +5,32 @@ import 'animate.css';
 import 'nprogress/nprogress.css'
 // 引入 Element Plus 样式
 import 'element-plus/dist/index.css'
+// 引入 highlight.js 样式
+import 'highlight.js/styles/github.css'
+// 引入 highlight.js 核心功能
+import hljs from 'highlight.js'
+import javascript from 'highlight.js/lib/languages/javascript'
+import python from 'highlight.js/lib/languages/python'
+import java from 'highlight.js/lib/languages/java'
+import xml from 'highlight.js/lib/languages/xml'
+import css from 'highlight.js/lib/languages/css'
+import typescript from 'highlight.js/lib/languages/typescript'
+import php from 'highlight.js/lib/languages/php'
+import cpp from 'highlight.js/lib/languages/cpp'
+import csharp from 'highlight.js/lib/languages/csharp'
+import ruby from 'highlight.js/lib/languages/ruby'
+
+// 注册语言
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('python', python)
+hljs.registerLanguage('java', java)
+hljs.registerLanguage('html', xml)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('php', php)
+hljs.registerLanguage('cpp', cpp)
+hljs.registerLanguage('csharp', csharp)
+hljs.registerLanguage('ruby', ruby)
 
 
 import { createApp } from 'vue'
@@ -35,4 +61,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 // 应用图片点击放大
 app.use(VueViewer)
+
+// 全局注册 highlight.js 方法
+app.config.globalProperties.$hljs = hljs
 app.mount('#app')

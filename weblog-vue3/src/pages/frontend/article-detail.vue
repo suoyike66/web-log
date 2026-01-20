@@ -78,7 +78,7 @@
                         </div>
 
                         <!-- 正文 -->
-                        <div ref="articleContentRef" class="mt-5 article-content" v-html="article.content"></div>
+                        <div ref="articleContentRef" class="mt-5 article-content" v-viewer v-html="article.content"></div>
 
                         <!-- 标签集合 -->
                         <div v-if="article.tags && article.tags.length > 0" class="mt-5">
@@ -162,6 +162,8 @@ import { getArticleDetail } from '@/api/frontend/article'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, watch, nextTick, onMounted } from 'vue'
 import Viewer from 'viewerjs'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github.css'
 
 const route = useRoute()
 const router = useRouter()
@@ -177,6 +179,104 @@ const loading = ref(true)
 const articleContentRef = ref(null)
 // 图片查看器实例
 const viewerInstance = ref(null)
+
+// 初始化代码语法高亮
+function highlightCode() {
+    nextTick(() => {
+        if (articleContentRef.value) {
+            const codeBlocks = articleContentRef.value.querySelectorAll('pre code')
+            codeBlocks.forEach((block) => {
+                // 应用语法高亮
+                hljs.highlightElement(block)
+                
+                // 添加复制按钮
+                addCopyButton(block)
+                
+                // 添加行号
+                addLineNumbers(block)
+            })
+        }
+    })
+}
+
+// 添加复制按钮
+function addCopyButton(block) {
+    const pre = block.parentElement
+    if (!pre.querySelector('.copy-button')) {
+        const button = document.createElement('button')
+        button.className = 'copy-button'
+        button.textContent = '复制'
+        button.style.position = 'absolute'
+        button.style.top = '8px'
+        button.style.right = '8px'
+        button.style.padding = '4px 8px'
+        button.style.fontSize = '12px'
+        button.style.backgroundColor = '#f0f0f0'
+        button.style.border = '1px solid #ddd'
+        button.style.borderRadius = '4px'
+        button.style.cursor = 'pointer'
+        button.style.zIndex = '10'
+        
+        button.addEventListener('click', () => {
+            const code = block.textContent
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = '已复制'
+                setTimeout(() => {
+                    button.textContent = '复制'
+                }, 2000)
+            }).catch(err => {
+                console.error('复制失败:', err)
+                button.textContent = '复制失败'
+                setTimeout(() => {
+                    button.textContent = '复制'
+                }, 2000)
+            })
+        })
+        
+        pre.style.position = 'relative'
+        pre.appendChild(button)
+    }
+}
+
+// 添加行号
+function addLineNumbers(block) {
+    const pre = block.parentElement
+    if (!pre.querySelector('.line-numbers')) {
+        const code = block.textContent
+        const lines = code.split('\n')
+        const lineCount = lines.length
+        
+        // 创建行号容器
+        const lineNumbers = document.createElement('div')
+        lineNumbers.className = 'line-numbers'
+        lineNumbers.style.position = 'absolute'
+        lineNumbers.style.left = '0'
+        lineNumbers.style.top = '0'
+        lineNumbers.style.width = '40px'
+        lineNumbers.style.height = '100%'
+        lineNumbers.style.backgroundColor = '#f5f5f5'
+        lineNumbers.style.borderRight = '1px solid #ddd'
+        lineNumbers.style.padding = '16px 0'
+        lineNumbers.style.fontSize = '14px'
+        lineNumbers.style.lineHeight = '1.5'
+        lineNumbers.style.textAlign = 'center'
+        lineNumbers.style.color = '#999'
+        lineNumbers.style.userSelect = 'none'
+        
+        // 添加行号
+        for (let i = 1; i <= lineCount; i++) {
+            const lineNumber = document.createElement('div')
+            lineNumber.textContent = i
+            lineNumber.style.height = '21px'
+            lineNumbers.appendChild(lineNumber)
+        }
+        
+        // 调整代码块位置
+        block.style.paddingLeft = '50px'
+        pre.style.position = 'relative'
+        pre.appendChild(lineNumbers)
+    }
+}
 
 // 初始化图片放大功能
 function initImageViewer() {
@@ -226,6 +326,8 @@ function refreshArticleDetail(articleId) {
         }
         // 设置加载状态为 false
         loading.value = false
+        // 初始化代码语法高亮
+        highlightCode()
         return
     }
     getArticleDetail(articleId).then((res) => {
@@ -245,6 +347,8 @@ function refreshArticleDetail(articleId) {
         loading.value = false
         // 初始化图片放大功能
         initImageViewer()
+        // 初始化代码语法高亮
+        highlightCode()
     }).catch((error) => {
         console.error('请求失败:', error)
         article.value = {
@@ -256,6 +360,8 @@ function refreshArticleDetail(articleId) {
         loading.value = false
         // 初始化图片放大功能
         initImageViewer()
+        // 初始化代码语法高亮
+        highlightCode()
     })
 }
 refreshArticleDetail(route.params.articleId)
