@@ -1,15 +1,10 @@
-package com.suoyike.weblog.admin.service.impl;
+package com.suoyike.weblog.web.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.collect.Maps;
-import com.suoyike.weblog.admin.model.vo.dashboard.FindDashboardStatisticsInfoRspVO;
-import com.suoyike.weblog.admin.service.AdminDashboardService;
-import com.suoyike.weblog.common.domain.dos.ArticleDO;
 import com.suoyike.weblog.common.domain.dos.ArticlePublishCountDO;
 import com.suoyike.weblog.common.domain.mapper.ArticleMapper;
-import com.suoyike.weblog.common.domain.mapper.CategoryMapper;
-import com.suoyike.weblog.common.domain.mapper.TagMapper;
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,52 +16,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @author: 蓑衣客
+ * @url: www.suoyike.com
+ * @date: 2026-01-21 10:26
+ * @description: 仪表盘服务实现
+ **/
 @Service
 @Slf4j
-public class AdminDashboardServiceImpl implements AdminDashboardService {
+public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private ArticleMapper articleMapper;
-    @Autowired
-    private CategoryMapper categoryMapper;
-    @Autowired
-    private TagMapper tagMapper;
-
-    /**
-     * 获取仪表盘基础统计信息
-     *
-     * @return
-     */
-    @Override
-    public Response findDashboardStatistics() {
-        // 查询文章总数
-        Long articleTotalCount = articleMapper.selectCount(Wrappers.emptyWrapper());
-
-        // 查询分类总数
-        Long categoryTotalCount = categoryMapper.selectCount(Wrappers.emptyWrapper());
-
-        // 查询标签总数
-        Long tagTotalCount = tagMapper.selectCount(Wrappers.emptyWrapper());
-
-        // 总浏览量
-        List<ArticleDO> articleDOS = articleMapper.selectAllReadNum();
-        Long pvTotalCount = 0L;
-
-        if (!CollectionUtils.isEmpty(articleDOS)) {
-            // 所有 read_num 相加
-            pvTotalCount = articleDOS.stream().mapToLong(ArticleDO::getReadNum).sum();
-        }
-
-        // 组装 VO 类
-        FindDashboardStatisticsInfoRspVO vo = FindDashboardStatisticsInfoRspVO.builder()
-                .articleTotalCount(articleTotalCount)
-                .categoryTotalCount(categoryTotalCount)
-                .tagTotalCount(tagTotalCount)
-                .pvTotalCount(pvTotalCount)
-                .build();
-
-        return Response.success(vo);
-    }
 
     /**
      * 获取文章发布热点统计信息
@@ -74,7 +35,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
      * @return
      */
     @Override
-    public Response findDashboardPublishArticleStatistics() {
+    public Response findArticlePublishHotStatistics() {
         // 当前日期
         LocalDate currDate = LocalDate.now();
 
