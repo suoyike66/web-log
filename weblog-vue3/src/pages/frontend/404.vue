@@ -11,11 +11,13 @@
     </main>
 
     <Footer></Footer>
+    <ScrollToTopButton />
 </template>
 
 <script setup>
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
+import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

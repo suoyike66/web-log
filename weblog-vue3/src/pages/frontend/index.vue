@@ -119,6 +119,7 @@
     </main>
 
     <Footer></Footer>
+    <ScrollToTopButton />
 </template>
 
 <script setup>
@@ -127,6 +128,7 @@ import Footer from '@/layouts/frontend/components/Footer.vue'
 import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
+import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { initTooltips } from 'flowbite'
 import { onMounted, ref } from 'vue'
 import { getArticlePageList } from '@/api/frontend/article'
