@@ -15,4 +15,10 @@ public interface DashboardService {
      * @return
      */
     Response findArticlePublishHotStatistics();
+
+    /**
+     * 获取最近一周文章 PV 访问量统计信息
+     * @return
+     */
+    Response findArticlePVStatistics();
 }

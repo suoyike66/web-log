@@ -30,4 +30,11 @@ public class DashboardController {
     public Response findArticlePublishHotStatistics() {
         return dashboardService.findArticlePublishHotStatistics();
     }
+
+    @PostMapping("/article/pv/statistics")
+    @ApiOperation(value = "获取最近一周文章 PV 访问量统计信息")
+    @ApiOperationLog(description = "获取最近一周文章 PV 访问量统计信息")
+    public Response findArticlePVStatistics() {
+        return dashboardService.findArticlePVStatistics();
+    }
 }
