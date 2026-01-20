@@ -28,12 +28,15 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
      * @return
      */
     default Page<ArticleDO> selectPageList(Long current, Long size, String title, LocalDate startDate, LocalDate endDate) {
-        // 分页对象(查询第几页、每页多少数据)
-        Page<ArticleDO> page = new Page<>(current, size);
+        // 分页对象(查询第几页、每页多少数据)，防止传入null值导致NPE
+        Page<ArticleDO> page = new Page<>(
+            Objects.nonNull(current) ? current : 1L,
+            Objects.nonNull(size) ? size : 10L
+        );
 
         // 构建查询条件
         LambdaQueryWrapper<ArticleDO> wrapper = Wrappers.<ArticleDO>lambdaQuery()
-                .like(StringUtils.isNotBlank(title), ArticleDO::getTitle, title.trim()) // like 模块查询
+                .like(StringUtils.isNotBlank(title), ArticleDO::getTitle, StringUtils.isBlank(title) ? null : title.trim()) // like 模块查询
                 .ge(Objects.nonNull(startDate), ArticleDO::getCreateTime, startDate) // 大于等于 startDate
                 .le(Objects.nonNull(endDate), ArticleDO::getCreateTime, endDate)  // 小于等于 endDate
                 .orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
