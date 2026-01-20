@@ -1,5 +1,6 @@
 package com.suoyike.weblog.admin.convert;
 
+import com.suoyike.weblog.admin.model.vo.blogsettings.FindBlogSettingsRspVO;
 import com.suoyike.weblog.admin.model.vo.blogsettings.UpdateBlogSettingsReqVO;
 import com.suoyike.weblog.common.domain.dos.BlogSettingsDO;
 import org.mapstruct.Mapper;
@@ -24,5 +25,12 @@ public interface BlogSettingsConvert {
      * @return
      */
     BlogSettingsDO convertVO2DO(UpdateBlogSettingsReqVO bean);
+
+    /**
+     * 将 DO 转化为 VO
+     * @param bean
+     * @return
+     */
+    FindBlogSettingsRspVO convertDO2VO(BlogSettingsDO bean);
 
 }
