@@ -46,7 +46,7 @@
                                 <span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
                         <!-- 头像 Avatar -->
                         <el-avatar class="mr-2" :size="25"
-                            src="https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg" />
+                            :src="blogSettingsStore.blogSettings.avatar" />
                         {{ userStore.userInfo.username }}
                         <el-icon class="el-icon--right">
                             <arrow-down />
@@ -89,12 +89,13 @@
     </el-dialog>
 </template>
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import { useMenuStore } from '@/stores/menu'
 // 引入 useFullscreen
 import { useFullscreen } from '@vueuse/core'
 // 引入用户存储
 import { useUserStore } from '@/stores/user'
+import { useBlogSettingsStore } from '@/stores/blogsettings'
 import { useRouter } from 'vue-router'
 import { showMessage, showModel} from '@/composables/util'
 import { updateAdminPassword } from '@/api/admin/user'
@@ -106,6 +107,13 @@ import { updateAdminPassword } from '@/api/admin/user'
     const { isFullscreen, toggle } = useFullscreen()
     // 引入了菜单 store
     const menuStore = useMenuStore()
+    // 引入博客设置信息 store
+    const blogSettingsStore = useBlogSettingsStore()
+    
+    // 组件挂载时获取博客设置信息
+    onMounted(() => {
+        blogSettingsStore.getBlogSettings()
+    })
     // 对话框是否显示
     const dialogVisible = ref(false)
     // 表单引用
