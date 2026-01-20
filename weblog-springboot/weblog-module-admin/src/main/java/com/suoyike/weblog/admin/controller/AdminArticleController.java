@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.controller;
 
 import com.suoyike.weblog.admin.model.vo.article.DeleteArticleReqVO;
+import com.suoyike.weblog.admin.model.vo.article.FindArticlePageListReqVO;
 import com.suoyike.weblog.admin.model.vo.article.PublishArticleReqVO;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
@@ -43,6 +44,13 @@ public class AdminArticleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response deleteArticle(@RequestBody @Validated DeleteArticleReqVO deleteArticleReqVO) {
         return articleService.deleteArticle(deleteArticleReqVO);
+    }
+
+    @PostMapping("/list")
+    @ApiOperation(value = "查询文章分页数据")
+    @ApiOperationLog(description = "查询文章分页数据")
+    public Response findArticlePageList(@RequestBody @Validated FindArticlePageListReqVO findArticlePageListReqVO) {
+        return articleService.findArticlePageList(findArticlePageListReqVO);
     }
 
 
