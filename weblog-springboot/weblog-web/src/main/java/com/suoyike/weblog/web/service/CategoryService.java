@@ -1,6 +1,7 @@
 package com.suoyike.weblog.web.service;
 
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.model.vo.category.FindCategoryArticlePageListReqVO;
 
 /**
  * @author: 蓑衣客
@@ -14,4 +15,11 @@ public interface CategoryService {
      * @return
      */
     Response findCategoryList();
+
+    /**
+     * 获取分类下文章分页数据
+     * @param findCategoryArticlePageListReqVO
+     * @return
+     */
+    Response findCategoryArticlePageList(FindCategoryArticlePageListReqVO findCategoryArticlePageListReqVO);
 }
