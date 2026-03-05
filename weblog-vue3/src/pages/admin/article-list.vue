@@ -471,7 +471,13 @@ const publishArticleSubmit = () => {
             return false
         }
 
-        publishArticle(form).then((res) => {
+        // 构建提交数据，将 tags 转换为 tagIds
+        const submitData = {
+            ...form,
+            tagIds: form.tags
+        }
+
+        publishArticle(submitData).then((res) => {
             if (res.success == false) {
                 // 获取服务端返回的错误消息
                 let message = res.message
@@ -530,8 +536,14 @@ const updateSubmit = () => {
             return false
         }
 
+        // 构建提交数据，将 tags 转换为 tagIds
+        const submitData = {
+            ...updateArticleForm,
+            tagIds: updateArticleForm.tags
+        }
+
         // 请求更新文章接口
-        updateArticle(updateArticleForm).then((res) => {
+        updateArticle(submitData).then((res) => {
             if (res.success == false) {
                 // 获取服务端返回的错误消息
                 let message = res.message

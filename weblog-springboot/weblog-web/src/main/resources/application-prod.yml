@@ -1,28 +1,42 @@
 server:
-  port: 8080 # 项目运行端口，默认 8080
+  port: 8080
+
 spring:
   datasource:
-    #  指定数据库驱动类
     driver-class-name: com.mysql.cj.jdbc.Driver
-    # 数据库连接信息
     url: jdbc:mysql://172.17.0.1:3306/weblog?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
     username: root
     password: han414885140
-    hikari: # 数据库连接池使用 Hikari
-      minimum-idle: 5 # 连接池中最小空闲连接数
-      maximum-pool-size: 20 # 连接池中允许的最大连接数
-      auto-commit: true # 是否自动提交事务
-      idle-timeout: 30000 # 连接在连接池中闲置的最长时间，超过这个时间会被释放。
-      pool-name: Weblog-HikariCP # 自定义连接池的名字
-      max-lifetime: 1800000 # 连接在连接池中的最大存活时间，超过这个时间会被强制关闭。
-      connection-timeout: 30000 # 连接的超时时间
-      connection-test-query: SELECT 1 # 用于测试连接是否可用的SQL查询
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: Weblog-HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
 
 #=================================================================
-# minio (上传图片需要，需配置成自己的地址)
+# JWT 配置 (新增部分，解决启动报错)
+#=================================================================
+jwt:
+  # 签发人
+  issuer: suoyike
+  # 秘钥
+  secret: wu3bCrL/g6OKGPO0zm24xkuhqvc0OUCPV9P4jO7VPmsvOL9S1bJUIy03ahTWGxhylLx6THtp/d0t3BmukVob/g==
+  # token 过期时间（单位：分钟） 24*60
+  tokenExpireTime: 1440
+  # token 请求头中的 key 值
+  tokenHeaderKey: Authorization
+  # token 请求头中的 value 值前缀
+  tokenPrefix: Bearer
+
+#=================================================================
+# MinIO 配置
 #=================================================================
 minio:
-  endpoint: http://172.17.0.3/:9000
+  endpoint: https://img.suoyikehan.com
   accessKey: suoyike
   secretKey: han414885140
   bucketName: weblog

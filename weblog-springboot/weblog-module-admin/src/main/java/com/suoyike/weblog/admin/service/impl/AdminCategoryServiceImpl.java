@@ -37,6 +37,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
     private ArticleCategoryRelMapper articleCategoryRelMapper;
     /**
      * 添加分类

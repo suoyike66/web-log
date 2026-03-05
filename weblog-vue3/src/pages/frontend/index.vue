@@ -8,25 +8,30 @@
             <!-- 左边栏，占用 3 列 -->
             <div class="col-span-4 md:col-span-3 mb-3">
                 <!-- 文章列表，grid 表格布局，分为 2 列 -->
-                <div class="grid grid-cols-2 gap-4">
+                <div v-if="!loading" class="grid grid-cols-2 gap-4">
                     <div v-for="(article, index) in articles" :key="index" class="col-span-2 md:col-span-1">
-                        <div class="bg-white h-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                        <div class="bg-white h-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 animate__animated animate__fadeIn">
                             <!-- 文章封面 -->
-                            <a @click="goArticleDetailPage(article.id)" class="cursor-pointer">
-                                <img class="rounded-t-lg h-48 w-full"
-                                    :src="article.cover" />
+                            <a @click="goArticleDetailPage(article.id)" class="cursor-pointer block">
+                                <LazyImage 
+                                    :src="article.cover" 
+                                    alt="文章封面" 
+                                    width="100%" 
+                                    height="18rem" 
+                                    class="rounded-t-lg"
+                                />
                             </a>
                             <div class="p-5">
                                 <!-- 标签 -->
                                 <div class="mb-3">
                                     <span v-for="(tag, tagIndex) in article.tags" :key="tagIndex" @click="goTagArticleListPage(tag.id, tag.name)"
-                                        class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded hover:bg-green-200 hover:text-green-900 dark:bg-green-900 dark:text-green-300">
+                                        class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded hover:bg-green-200 hover:text-green-900 dark:bg-green-900 dark:text-green-300 transition-all duration-200">
                                         {{ tag.name }}
                                     </span>
                                 </div>
                                 <!-- 文章标题 -->
                                 <a @click="goArticleDetailPage(article.id)" class="cursor-pointer">
-                                    <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                    <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-600 transition-colors duration-200">
                                         {{ article.title }}</h2>
                                 </a>
                                 <!-- 文章摘要 -->
@@ -49,10 +54,16 @@
                                             stroke-width="2"
                                             d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z" />
                                     </svg>
-                                    <a @click="goCategoryArticleListPage(article.category.id, article.category.name)" class="cursor-pointer text-gray-400 hover:underline">{{ article.category.name }}</a>
+                                    <a @click="goCategoryArticleListPage(article.category.id, article.category.name)" class="cursor-pointer text-gray-400 hover:underline transition-colors duration-200">{{ article.category.name }}</a>
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- 文章列表骨架屏 -->
+                <div v-else class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2 md:col-span-1" v-for="i in 4" :key="i">
+                        <Skeleton type="card" />
                     </div>
                 </div>
                 <!-- 分页 -->
@@ -103,7 +114,7 @@
 
             <!-- 右边侧边栏，占用一列 -->
             <aside class="col-span-4 md:col-span-1">
-                <div class="sticky top-[5.5rem]">
+                <div class="sticky top-[5rem]">
                     <!-- 博主信息 -->
                     <UserInfoCard></UserInfoCard>
 
@@ -129,6 +140,8 @@ import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
+import LazyImage from '@/components/LazyImage.vue'
+import Skeleton from '@/components/Skeleton.vue'
 import { initTooltips } from 'flowbite'
 import { onMounted, ref } from 'vue'
 import { getArticlePageList } from '@/api/frontend/article'
@@ -158,11 +171,17 @@ const size = ref(10)
 const total = ref(0)
 // 总共多少页
 const pages = ref(0)
+// 加载状态
+const loading = ref(true)
 
 
 function getArticles(currentNo) {
     // 上下页是否能点击判断，当要跳转上一页且页码小于 1 时，则不允许跳转；当要跳转下一页且页码大于总页数时，则不允许跳转
     if (currentNo < 1 || (pages.value > 0 && currentNo > pages.value)) return
+    
+    // 设置加载状态
+    loading.value = true
+    
     // 调用分页接口渲染数据
     getArticlePageList({current: currentNo, size: size.value}).then((res) => {
         if (res.success) {
@@ -172,6 +191,9 @@ function getArticles(currentNo) {
             total.value = res.total
             pages.value = res.pages
         }
+    }).finally(() => {
+        // 无论成功失败，都设置加载状态为 false
+        loading.value = false
     })
 }
 getArticles(current.value)

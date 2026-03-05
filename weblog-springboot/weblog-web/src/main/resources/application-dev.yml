@@ -1,3 +1,6 @@
+server:
+  port: 8080 # 开发环境使用8080端口避免冲突
+
 spring:
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
@@ -22,7 +25,7 @@ jwt:
   # 签发人
   issuer: suoyike
   # 秘钥
-  secret: Gzc0/SaCT72GknpXqTM+bRgvOFc7+9UCgFBsppNO/SXt+eiJmYly/8J53UKBMtRTlsLrp9ih+OcH+g6zBTCgCw==
+  secret: wu3bCrL/g6OKGPO0zm24xkuhqvc0OUCPV9P4jO7VPmsvOL9S1bJUIy03ahTWGxhylLx6THtp/d0t3BmukVob/g==
 
 #=================================================================
 # minio (上传图片需要，需配置成自己的地址)

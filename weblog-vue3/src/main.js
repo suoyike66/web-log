@@ -1,4 +1,6 @@
 import '@/assets/main.css'
+// 引入交互样式优化
+import '@/assets/interaction.css'
 // 引入 animate.css 动画库
 import 'animate.css';
 // 引入进度条样式
@@ -8,29 +10,20 @@ import 'element-plus/dist/index.css'
 // 引入 highlight.js 样式
 import 'highlight.js/styles/github.css'
 // 引入 highlight.js 核心功能
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
+// 按需加载常用语言包
 import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import java from 'highlight.js/lib/languages/java'
 import xml from 'highlight.js/lib/languages/xml'
 import css from 'highlight.js/lib/languages/css'
+import python from 'highlight.js/lib/languages/python'
 import typescript from 'highlight.js/lib/languages/typescript'
-import php from 'highlight.js/lib/languages/php'
-import cpp from 'highlight.js/lib/languages/cpp'
-import csharp from 'highlight.js/lib/languages/csharp'
-import ruby from 'highlight.js/lib/languages/ruby'
 
 // 注册语言
 hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('python', python)
-hljs.registerLanguage('java', java)
 hljs.registerLanguage('html', xml)
 hljs.registerLanguage('css', css)
+hljs.registerLanguage('python', python)
 hljs.registerLanguage('typescript', typescript)
-hljs.registerLanguage('php', php)
-hljs.registerLanguage('cpp', cpp)
-hljs.registerLanguage('csharp', csharp)
-hljs.registerLanguage('ruby', ruby)
 
 
 import { createApp } from 'vue'
@@ -64,4 +57,6 @@ app.use(VueViewer)
 
 // 全局注册 highlight.js 方法
 app.config.globalProperties.$hljs = hljs
+// 挂载到 window 对象，方便在组件中直接使用
+window.hljs = hljs
 app.mount('#app')

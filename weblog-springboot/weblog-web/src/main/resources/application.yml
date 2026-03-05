@@ -13,7 +13,7 @@ jwt:
   # 签发人
   issuer: suoyike
   # 秘钥
-  secret: $2a$10$5mWyH.0WKr9mJUTiHXLopePkXHr0YXHUIxfrBtVNuQppDxsIJjHoq
+  secret: wu3bCrL/g6OKGPO0zm24xkuhqvc0OUCPV9P4jO7VPmsvOL9S1bJUIy03ahTWGxhylLx6THtp/d0t3BmukVob/g==
   # token 过期时间（单位：分钟） 24*60
   tokenExpireTime: 1440
   # token 请求头中的 key 值

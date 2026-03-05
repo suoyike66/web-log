@@ -35,11 +35,8 @@
                     </nav>
 
                     <!-- 加载状态 -->
-                    <div v-if="loading" class="flex items-center justify-center h-64">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                            <p class="mt-4 text-gray-600 dark:text-gray-400">加载中...</p>
-                        </div>
+                    <div v-if="loading" class="py-5">
+                        <Skeleton type="article" />
                     </div>
                     
                     <!-- 文章 -->
@@ -161,12 +158,13 @@ import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
 import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
+import Skeleton from '@/components/Skeleton.vue'
 import { getArticleDetail } from '@/api/frontend/article'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, watch, nextTick, onMounted } from 'vue'
 import Viewer from 'viewerjs'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
+// 使用全局注册的 highlight.js，避免重复引入
+import { useLazyLoad } from '@/composables/useLazyLoad'
 import Toc from '@/layouts/frontend/components/Toc.vue'
 
 const route = useRoute()
@@ -174,6 +172,9 @@ const router = useRouter()
 // 路由传递过来的文章 ID
 console.log('路由参数:', route.params)
 console.log('文章 ID:', route.params.articleId)
+
+// 使用图片懒加载composable
+const { handleDynamicContentLazyLoad } = useLazyLoad()
 
 // 文章数据
 const article = ref({})
@@ -191,7 +192,7 @@ function highlightCode() {
             const codeBlocks = articleContentRef.value.querySelectorAll('pre code')
             codeBlocks.forEach((block) => {
                 // 应用语法高亮
-                hljs.highlightElement(block)
+                window.hljs.highlightElement(block)
                 
                 // 添加复制按钮
                 addCopyButton(block)
@@ -353,6 +354,8 @@ function refreshArticleDetail(articleId) {
         initImageViewer()
         // 初始化代码语法高亮
         highlightCode()
+        // 初始化图片懒加载
+        handleDynamicContentLazyLoad(articleContentRef)
     }).catch((error) => {
         console.error('请求失败:', error)
         article.value = {
@@ -504,11 +507,51 @@ h6 {
     display: block;
     margin: 0 auto;
     border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .article-content img:hover,
-img:focus {
+.article-content img:focus {
     box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, .15);
+    transform: scale(1.02);
+}
+
+/* 懒加载图片样式 */
+.article-content img.lazy-loading {
+    background: linear-gradient(
+        90deg,
+        rgba(226, 226, 226, 0.6) 0%,
+        rgba(226, 226, 226, 0.2) 50%,
+        rgba(226, 226, 226, 0.6) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+.article-content img.lazy-loaded {
+    animation: fade-in 0.3s ease-in-out;
+}
+
+/* 加载动画 */
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* 淡入动画 */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* 图片描述文字 */

@@ -1,0 +1,35 @@
+package com.suoyike.weblog.web.controller;
+
+import com.suoyike.weblog.common.aspect.ApiOperationLog;
+import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.service.StatisticsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author: 蓑衣客
+ * @url: www.suoyike.com
+ * @date: 2026-02-01 13:32
+ * @description: 统计信息
+ **/
+@RestController
+@RequestMapping("/statistics")
+@Api(tags = "统计信息")
+public class StatisticsController {
+
+    @Autowired
+    private StatisticsService statisticsService;
+
+    @PostMapping("/info")
+    @ApiOperation(value = "前台获取统计信息")
+    @ApiOperationLog(description = "前台获取统计信息")
+    public Response findInfo() {
+        return statisticsService.findInfo();
+    }
+
+
+}

@@ -91,75 +91,61 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         articleCategoryRelMapper.insert(articleCategoryRelDO);
 
         // 4. 保存文章关联的标签集合
-        List<String> publishTags = publishArticleReqVO.getTags();
-        insertTags(articleId, publishTags);
+        List<Long> tagIds = publishArticleReqVO.getTagIds();
+        insertTagsByTagIds(articleId, tagIds);
 
         return Response.success();
     }
 
     /**
-     * 保存标签
+     * 根据标签 ID 保存关联关系
      * @param articleId
-     * @param publishTags
+     * @param tagIds
      */
-    private void insertTags(Long articleId, List<String> publishTags) {
-        if (CollectionUtils.isEmpty(publishTags)) {
+    private void insertTagsByTagIds(Long articleId, List<Long> tagIds) {
+        if (CollectionUtils.isEmpty(tagIds)) {
             return;
         }
-
-        // 去除空字符串和重复标签
-        Set<String> uniquePublishTags = publishTags.stream()
-                .map(String::trim)
-                .filter(tagName -> !tagName.isEmpty())
+    
+        // 去除空值和重复 ID
+        Set<Long> uniqueTagIds = tagIds.stream()
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
-        
-        if (uniquePublishTags.isEmpty()) {
+            
+        if (uniqueTagIds.isEmpty()) {
             return;
         }
-
+    
         // 查询数据库中已存在的标签
         List<TagDO> existingTags = tagMapper.selectList(
-            new LambdaQueryWrapper<TagDO>().in(TagDO::getName, uniquePublishTags));
-        Set<String> existingTagNames = existingTags.stream()
-                .map(TagDO::getName)
-                .collect(Collectors.toSet());
-        Map<String, Long> existingTagNameToIdMap = existingTags.stream()
-                .collect(Collectors.toMap(TagDO::getName, TagDO::getId));
-
-        // 分离需要插入的新标签和已存在的标签
-        Set<String> newTagNames = uniquePublishTags.stream()
-                .filter(tagName -> !existingTagNames.contains(tagName))
-                .collect(Collectors.toSet());
-
-        // 插入新标签
-        List<TagDO> newTagDOS = new ArrayList<>();
-        for (String tagName : newTagNames) {
-            TagDO tagDO = TagDO.builder()
-                    .name(tagName)
-                    .createTime(LocalDateTime.now())
-                    .updateTime(LocalDateTime.now())
-                    .build();
-            // 先单独插入每个标签以获取其ID
-            tagMapper.insert(tagDO);
-            // 直接添加到映射中
-            existingTagNameToIdMap.put(tagDO.getName(), tagDO.getId());
+            new LambdaQueryWrapper<TagDO>().in(TagDO::getId, uniqueTagIds));
+            
+        if (existingTags.isEmpty()) {
+            log.warn("==> 提交的标签 ID 均不存在，tagIds: {}", uniqueTagIds);
+            return;
         }
-
-        // 创建文章-标签关联关系
+    
+        log.info("==> 开始保存文章 - 标签关联关系，articleId: {}, tagIds: {}", articleId, uniqueTagIds);
+    
+        // 创建文章 - 标签关联关系
         List<ArticleTagRelDO> articleTagRelDOS = new ArrayList<>();
-        for (String tagName : uniquePublishTags) {
-            Long tagId = existingTagNameToIdMap.get(tagName);
-            if (tagId != null) {
-                ArticleTagRelDO articleTagRelDO = ArticleTagRelDO.builder()
-                        .articleId(articleId)
-                        .tagId(tagId)
-                        .build();
-                articleTagRelDOS.add(articleTagRelDO);
-            }
+        for (TagDO tagDO : existingTags) {
+            ArticleTagRelDO articleTagRelDO = ArticleTagRelDO.builder()
+                    .articleId(articleId)
+                    .tagId(tagDO.getId())
+                    .build();
+            articleTagRelDOS.add(articleTagRelDO);
         }
-
+    
+        log.info("==> 准备插入的关联关系数据：{}", articleTagRelDOS);
+    
         if (!articleTagRelDOS.isEmpty()) {
-            articleTagRelMapper.insertBatchSomeColumn(articleTagRelDOS);
+            // 不使用批量插入，改用逐个插入来测试
+            for (ArticleTagRelDO relDO : articleTagRelDOS) {
+                int count = articleTagRelMapper.insert(relDO);
+                log.info("==> 插入单条记录结果：articleId={}, tagId={}, count={}", 
+                    relDO.getArticleId(), relDO.getTagId(), count);
+            }
         }
     }
 
@@ -323,8 +309,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         // 4. 保存文章关联的标签集合
         // 先删除该文章对应的标签
         articleTagRelMapper.deleteByArticleId(articleId);
-        List<String> publishTags = updateArticleReqVO.getTags();
-        insertTags(articleId, publishTags);
+        List<Long> tagIds = updateArticleReqVO.getTagIds();
+        insertTagsByTagIds(articleId, tagIds);
 
         return Response.success();
     }

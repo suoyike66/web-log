@@ -1,12 +1,12 @@
 <template>
     <header class="sticky top-0 z-10">
-        <nav class="bg-white border-gray-200 border-b dark:bg-gray-900">
+        <nav class="bg-white border-gray-200 border-b dark:bg-gray-900 h-20">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <!-- 博客 LOGO 、博客名称 -->
                 <a href="/" class="flex items-center">
-                    <img :src="blogSettingsStore.blogSettings.logo" class="h-8 mr-3 rounded-full" alt="Flowbite Logo" />
+                    <img :src="isBlogSettingsLoaded ? blogSettingsStore.blogSettings.logo : '/weblog-logo-mini.png'" class="h-8 mr-3 rounded-full" alt="Flowbite Logo" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{
-                        blogSettingsStore.blogSettings.name }}</span>
+                        isBlogSettingsLoaded ? blogSettingsStore.blogSettings.name : 'Weblog' }}</span>
                 </a>
                 <div class="flex items-center md:order-2">
                     <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search"
@@ -41,7 +41,7 @@
                         class="text-white ml-2 mr-2 md:mr-0 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         type="button">
                         <!-- 用户登录头像 -->
-                        <img class="w-8 h-8 rounded-full" :src="userStore.userInfo.avatar || blogSettingsStore.blogSettings.avatar" alt="user photo">
+                        <img class="w-8 h-8 rounded-full" :src="userStore.userInfo.avatar || (isBlogSettingsLoaded ? blogSettingsStore.blogSettings.avatar : '/weblog-logo-mini.png')" alt="user photo">
                     </button>
 
                     <!-- Dropdown menu -->
@@ -169,23 +169,18 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { initCollapses, initDropdowns, initModals } from 'flowbite'
 import { useBlogSettingsStore } from '@/stores/blogsettings'
 import { useUserStore } from '@/stores/user'
 import { useRouter, useRoute } from 'vue-router'
 import { showMessage } from '@/composables/util'
 
-// 初始化 flowbit 相关组件
-onMounted(() => {
-    initCollapses();
-    initDropdowns();
-    initModals();
-    // 获取博客设置信息
-    blogSettingsStore.getBlogSettings();
-    // 获取用户信息
-    userStore.setUserInfo();
-})
+// 引入博客设置信息 store
+const blogSettingsStore = useBlogSettingsStore()
+
+// 引入用户信息 store
+const userStore = useUserStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -193,13 +188,45 @@ const route = useRoute()
 // 当前路由地址
 const currPath = ref(route.path)
 
-// 引入博客设置信息 store
-const blogSettingsStore = useBlogSettingsStore()
+// 监听路由变化，更新当前路径
+watch(() => route.path, (newPath) => {
+    currPath.value = newPath
+})
 
 // 是否登录，通过 userStore 中的 userInfo 对象是否有数据来判断
-const userStore = useUserStore()
-// 若 userInfo 对象有属性，则表示用户已登录
 const isLogined = computed(() => Object.keys(userStore.userInfo).length > 0)
+
+// 博客设置是否加载完成
+const isBlogSettingsLoaded = computed(() => Object.keys(blogSettingsStore.blogSettings).length > 0)
+
+// 获取博客设置信息
+const getBlogSettings = async () => {
+    try {
+        await blogSettingsStore.getBlogSettings()
+    } catch (error) {
+        console.error('获取博客设置失败:', error)
+    }
+}
+
+// 获取用户信息
+const getUserInfo = async () => {
+    try {
+        await userStore.setUserInfo()
+    } catch (error) {
+        console.error('获取用户信息失败:', error)
+    }
+}
+
+// 初始化 flowbit 相关组件
+onMounted(() => {
+    initCollapses();
+    initDropdowns();
+    initModals();
+    // 获取博客设置信息
+    getBlogSettings();
+    // 获取用户信息
+    getUserInfo();
+})
 
 // 退出登录
 const logout = () => {

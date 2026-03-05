@@ -1,13 +1,15 @@
-import axios from "axios";
+import axios from "axios"
 import { getToken } from "@/composables/cookie"
 import { showMessage } from '@/composables/util'
 import { useUserStore } from '@/stores/user'
+import { createCachedAxios } from '@/composables/useApiCache'
 
 // 创建 Axios 实例
 const instance = axios.create({
-  baseURL: "/api", // 你的 API 基础 URL
+  baseURL: import.meta.env.VITE_APP_BASE_API, // 你的 API 基础 URL
   timeout: 7000, // 请求超时时间
 })
+
 
 
 // 添加请求拦截器
@@ -43,8 +45,7 @@ instance.interceptors.response.use(function (response) {
     // 退出登录
     let userStore = useUserStore()
     userStore.logout()
-    // 刷新页面
-    location.reload()
+    // 移除刷新页面操作，避免未登录时无限刷新
   }
 
   // 若后台有错误提示就用提示文字，默认提示为 '请求失败'
@@ -55,5 +56,8 @@ instance.interceptors.response.use(function (response) {
   return Promise.reject(error)
 })
 
+// 创建带缓存的axios实例
+const cachedInstance = createCachedAxios(instance)
+
 // 暴露出去
-export default instance;
+export default cachedInstance;

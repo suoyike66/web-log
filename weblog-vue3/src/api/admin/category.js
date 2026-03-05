@@ -15,7 +15,13 @@ export function deleteCategory(id) {
   return axios.post("/admin/category/delete", { id })
 }
 
-// 获取分类 select 数据
+// 获取分类 select 数据（带缓存）
 export function getCategorySelectList() {
-  return axios.post("/admin/category/select/list")
+  return axios.post("/admin/category/select/list", {}, { cache: true, expireTime: 10 * 60 * 1000 }) // 缓存10分钟
+}
+
+// 清除分类相关缓存
+export function clearCategoryCache() {
+  const { clearCache } = require('@/composables/useApiCache');
+  clearCache();
 }

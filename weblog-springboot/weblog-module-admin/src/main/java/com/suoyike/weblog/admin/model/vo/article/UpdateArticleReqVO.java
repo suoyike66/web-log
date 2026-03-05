@@ -44,5 +44,5 @@ public class UpdateArticleReqVO {
     private Long categoryId;
 
     @NotEmpty(message = "文章标签不能为空")
-    private List<String> tags;
+    private List<Long> tagIds;
 }
