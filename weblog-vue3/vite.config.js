@@ -7,6 +7,8 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import ViteCompressionPlugin from 'vite-plugin-compression'
+import { visualizer } from 'rollup-plugin-visualizer'
+import importToCDN from 'vite-plugin-cdn-import'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -32,7 +34,17 @@ export default defineConfig({
       threshold: 1024, // 只压缩大于 1KB 的文件
       algorithm: 'gzip', // 使用 gzip 算法
       ext: '.gz', // 压缩文件的扩展名
-    })
+    }),
+    importToCDN({
+      modules: [
+        {
+          name: 'echarts',
+          var: 'echarts',
+          path: 'https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.min.js',
+        },
+      ],
+    }),
+    visualizer() // 放到最后
   ],
   resolve: {
     alias: {
