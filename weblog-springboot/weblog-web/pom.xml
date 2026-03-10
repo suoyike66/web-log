@@ -9,7 +9,6 @@
         <version>${revision}</version>
     </parent>
 
-    <groupId>com.suoyike</groupId>
     <artifactId>weblog-web</artifactId>
     <name>weblog-web</name>
     <description>weblog-web (入口项目，负责博客前台展示相关功能，打包也放在这个模块负责)</description>
@@ -24,6 +23,12 @@
             <groupId>com.suoyike</groupId>
             <artifactId>weblog-module-admin</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.suoyike</groupId>
+            <artifactId>weblog-module-search</artifactId>
+        </dependency>
+
         <!-- Web 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,11 +46,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
