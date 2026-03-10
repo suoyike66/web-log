@@ -22,7 +22,7 @@
                     </svg>
                     <div class="ml-5">
                         <h2 class="mb-1">文章</h2>
-                        <CountTo :value="articleTotalCount"></CountTo>
+                        <CountTo :value="articleTotalCount" customClass="font-bold text-2xl"></CountTo>
                     </div>
                 </div>
             </div>
@@ -187,11 +187,6 @@ import CountTo from '@/components/CountTo.vue'
 import ArticlePublishCalendar from '@/components/ArticlePublishCalendar.vue'
 import ArticlePVLineChat from '@/components/ArticlePVLineChat.vue'
 
-// 加载状态
-const loading = ref(true)
-// 错误信息
-const error = ref('')
-
 // 文章总数，默认值为 0
 const articleTotalCount = ref(0)
 // 分类总数
@@ -201,50 +196,29 @@ const tagTotalCount = ref(0)
 // PV 总访问量
 const pvTotalCount= ref(0)
 
+getBaseStatisticsInfo().then(res => {
+    if (res.success) {
+        articleTotalCount.value = res.data.articleTotalCount
+        categoryTotalCount.value = res.data.categoryTotalCount
+        tagTotalCount.value = res.data.tagTotalCount
+        pvTotalCount.value = res.data.pvTotalCount
+    }
+})
+
 // 按日统计文章发布数据
 const articlePublishInfo = ref({})
+getPublishArticleStatisticsInfo().then((res) => {
+    if (res.success) {
+        articlePublishInfo.value = res.data
+    }
+})
+
 // 近一周文章 PV 数据
 const articlePVInfo = ref({})
-
-// 初始化数据
-async function initData() {
-    try {
-        loading.value = true
-        error.value = ''
-        
-        // 并行请求所有数据
-        const [baseRes, publishRes, pvRes] = await Promise.all([
-            getBaseStatisticsInfo(),
-            getPublishArticleStatisticsInfo(),
-            getArticlePVStatisticsInfo()
-        ])
-        
-        // 处理基础统计数据
-        if (baseRes.success) {
-            articleTotalCount.value = baseRes.data.articleTotalCount
-            categoryTotalCount.value = baseRes.data.categoryTotalCount
-            tagTotalCount.value = baseRes.data.tagTotalCount
-            pvTotalCount.value = baseRes.data.pvTotalCount
-        }
-        
-        // 处理文章发布统计数据
-        if (publishRes.success) {
-            articlePublishInfo.value = publishRes.data
-        }
-        
-        // 处理 PV 统计数据
-        if (pvRes.success) {
-            articlePVInfo.value = pvRes.data
-        }
-    } catch (err) {
-        error.value = '数据加载失败，请刷新页面重试'
-        console.error('Dashboard data loading error:', err)
-    } finally {
-        loading.value = false
+getArticlePVStatisticsInfo().then((res) => {
+    if (res.success) {
+        articlePVInfo.value = res.data
     }
-}
-
-// 初始加载数据
-initData()
+})
 
 </script>
