@@ -19,6 +19,12 @@
             <groupId>com.suoyike</groupId>
             <artifactId>weblog-module-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.suoyike</groupId>
+            <artifactId>weblog-module-search</artifactId>
+        </dependency>
+
         <!-- 免写冗余的 Java 样板式代码 -->
         <dependency>
             <groupId>org.projectlombok</groupId>

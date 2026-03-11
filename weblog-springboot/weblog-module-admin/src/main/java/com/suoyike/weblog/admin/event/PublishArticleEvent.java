@@ -6,19 +6,19 @@ import org.springframework.context.ApplicationEvent;
 /**
  * @author: 蓑衣客
  * @url: www.suoyikehan.com
- * @date: 2026-01-21 02:11
- * @description: 文章被阅读事件
+ * @date: 2026-03-11 13:29
+ * @description: 文章发布事件
  **/
 
 @Getter
-public class ReadArticleEvent extends ApplicationEvent {
+public class PublishArticleEvent extends ApplicationEvent {
 
     /**
      * 文章 ID
      */
     private Long articleId;
 
-    public ReadArticleEvent(Object source, Long articleId) {
+    public PublishArticleEvent(Object source, Long articleId) {
         super(source);
         this.articleId = articleId;
     }
