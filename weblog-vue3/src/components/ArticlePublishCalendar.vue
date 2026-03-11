@@ -43,6 +43,7 @@ function initCalendar() {
     }
 
     var chartDom = document.getElementById('calendar');
+    var myChart = echarts.init(chartDom, null, { width: 600 });
     if (!chartDom) return;
     
     var myChart = echarts.init(chartDom);
