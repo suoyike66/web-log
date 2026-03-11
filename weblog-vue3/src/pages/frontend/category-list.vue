@@ -2,7 +2,7 @@
     <Header></Header>
 
     <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4">
+    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
         <!-- grid 表格布局，分为 4 列 -->
         <div class="grid grid-cols-4 gap-7">
             <!-- 左边栏，占用 3 列 -->
@@ -25,8 +25,10 @@
 
     </main>
 
+    <!-- 返回顶部 -->
+    <ScrollToTopButton></ScrollToTopButton>
+
     <Footer></Footer>
-    <ScrollToTopButton />
 </template>
 
 <script setup>

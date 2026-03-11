@@ -2,7 +2,7 @@
     <Header></Header>
 
     <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4 px-6">
+    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
         <!-- grid 表格布局，分为 4 列 -->
         <div class="grid grid-cols-4 gap-7">
             <!-- 左边栏，占用 3 列 -->
@@ -12,16 +12,17 @@
                     <time class="text-lg font-semibold text-gray-900 dark:text-white">{{ archive.month }}</time>
                     <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
                         <li v-for="(article, index2) in archive.articles" :key="index2">
-                            <a href="#" class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <a @click="goArticleDetailPage(article.id)" class="items-center block p-3 sm:flex hover:bg-gray-100 
+                            hover:rounded-lg dark:hover:bg-gray-700">
                                 <img class="w-24 h-12 mb-3 mr-3 rounded-lg sm:mb-0"
                                     :src="article.cover"/>
                                 <div class="text-gray-600 dark:text-gray-400">
-                                    <h2 class="text-base font-normal text-gray-900">
+                                    <h2 class="text-base font-normal text-gray-900 dark:text-white">
                                         {{ article.title }}
                                     </h2>
                                     <span
                                         class="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
-                                        <svg class="inline w-2.5 h-2.5 mr-2 text-gray-400 dark:text-white"
+                                        <svg class="inline w-2.5 h-2.5 mr-2 text-gray-400"
                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 20 20">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -58,7 +59,7 @@
                         <li v-for="(pageNo, index) in pages" :key="index">
                             <a @click="getArchives(pageNo)"
                                 class="flex items-center justify-center px-4 h-10 leading-tight border  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[pageNo == current ? 'text-sky-600  bg-sky-50 border-sky-500 hover:bg-sky-100 hover:text-sky-700' : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700']"
+                                :class="[pageNo == current ? 'text-blue-600  bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700' : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700']"
                                 >
                                 {{ index + 1 }}
                             </a>
@@ -84,21 +85,25 @@
 
             <!-- 右边侧边栏，占用一列 -->
             <aside class="col-span-4 md:col-span-1">
-                <!-- 博主信息 -->
-                <UserInfoCard></UserInfoCard>
+                <div class="sticky top-[5.5rem]">
+                    <!-- 博主信息 -->
+                    <UserInfoCard></UserInfoCard>
 
-                <!-- 分类 -->
-                <CategoryListCard></CategoryListCard>
+                    <!-- 分类 -->
+                    <CategoryListCard></CategoryListCard>
 
-                <!-- 标签 -->
-                <TagListCard></TagListCard>
+                    <!-- 标签 -->
+                    <TagListCard></TagListCard>
+                </div>
             </aside>
         </div>
 
     </main>
 
+    <!-- 返回顶部 -->
+    <ScrollToTopButton></ScrollToTopButton>
+
     <Footer></Footer>
-    <ScrollToTopButton />
 </template>
 
 <script setup>
@@ -110,6 +115,9 @@ import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { getArchivePageList } from '@/api/frontend/archive'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // 文章归档
 const archives = ref([])
@@ -137,4 +145,9 @@ function getArchives(currentNo) {
     })
 }
 getArchives(current.value)
+
+// 跳转文章详情页
+const goArticleDetailPage = (articleId) => {
+    router.push('/article/' + articleId)
+}
 </script>

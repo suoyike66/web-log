@@ -2,7 +2,7 @@
     <Header></Header>
 
     <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4">
+    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
         <!-- grid 表格布局，分为 4 列 -->
         <div class="grid grid-cols-4 gap-7">
             <!-- 左边栏，占用 3 列 -->
@@ -33,15 +33,15 @@
                     </h1>
                     <ol v-if="articles && articles.length > 0" class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
                         <li v-for="(article, index) in articles" :key="index">
-                            <a @click="goArticleDetailPage(article.id)" class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <a @click="goArticleDetailPage(article.id)" class="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg dark:hover:bg-gray-700">
                                 <img class="w-24 h-12 mb-3 mr-3 rounded-lg sm:mb-0" :src="article.cover" />
                                 <div class="text-gray-600 dark:text-gray-400">
-                                    <h2 class="text-base font-normal text-gray-900">
+                                    <h2 class="text-base font-normal text-gray-900 dark:text-white">
                                         {{ article.title }}
                                     </h2>
                                     <span
                                         class="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
-                                        <svg class="inline w-2.5 h-2.5 mr-2 text-gray-400 dark:text-white"
+                                        <svg class="inline w-2.5 h-2.5 mr-2 text-gray-400"
                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 20 20">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -232,7 +232,7 @@
                 </div>
 
                 <!-- 分页 -->
-                <nav aria-label="Page navigation example" class="mt-10 flex justify-center" v-if="pages > 1">
+                <nav aria-label="Page navigation example" class="mt-10 flex justify-center">
                     <ul class="flex items-center -space-x-px h-10 text-base">
                         <!-- 上一页 -->
                         <li>
@@ -290,8 +290,11 @@
 
     </main>
 
+    
+    <!-- 返回顶部 -->
+    <ScrollToTopButton></ScrollToTopButton>
+
     <Footer></Footer>
-    <ScrollToTopButton />
 </template>
 
 <script setup>
@@ -307,11 +310,6 @@ import { getCategoryArticlePageList } from '@/api/frontend/category'
 
 const route = useRoute()
 const router = useRouter()
-
-// 跳转到文章详情页
-const goArticleDetailPage = (articleId) => {
-  router.push('/article/' + articleId)
-}
 
 // 文章集合
 const articles = ref([])
@@ -352,4 +350,9 @@ function getCategoryArticles(currentNo) {
     })
 }
 getCategoryArticles(current.value)
+
+// 跳转文章详情页
+const goArticleDetailPage = (articleId) => {
+    router.push('/article/' + articleId)
+}
 </script>

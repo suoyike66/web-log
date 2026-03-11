@@ -2,7 +2,7 @@
     <Header></Header>
 
     <!-- 文章标题、标签、Meta 信息 -->
-    <div class="bg-white">
+    <div class="bg-white dark:bg-gray-900">
         <div class="max-w-screen-xl flex flex-col flex-wrap mx-auto px-4 md:px-6 pb-14 pt-10">
             <!-- 标签集合 -->
             <div v-if="article.tags && article.tags.length > 0" class="mb-5">
@@ -15,7 +15,7 @@
             </div>
             
             <!-- 文章标题 -->
-            <h1 class="font-bold text-4xl md:text-5xl mb-8">{{ article.title }}</h1>
+            <h1 class="font-bold text-4xl md:text-5xl mb-8 dark:text-white">{{ article.title }}</h1>
 
             <!-- Meta 信息 -->
             <div class="flex gap-3 md:gap-6 text-gray-400 items-center text-sm">
@@ -129,7 +129,9 @@
                     <!-- 文章 -->
                     <article>
                         <!-- 正文 -->
-                        <div ref="articleContentRef" class="mt-5 article-content" v-viewer v-html="article.content"></div>
+                        <div :class="{ 'dark': isDark }">
+                            <div ref="articleContentRef" class="mt-5 article-content" v-viewer v-html="article.content"></div>
+                        </div>
 
                         <!-- 上下篇 -->
                         <nav class="flex flex-row mt-7">
@@ -169,6 +171,9 @@
                             </div>
                         </nav>
                     </article>
+
+
+
                 </div>
             </div>
 
@@ -212,6 +217,11 @@ import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { initTooltips } from 'flowbite'
+
+import { useDark } from '@vueuse/core'
+
+// 是否是暗黑模式
+const isDark = useDark()
 
 // 初始化 Flowbit 组件
 onMounted(() => {
@@ -348,11 +358,23 @@ const handleMouseLeave = (event) => {
     padding-bottom: 15px;
 }
 
+::v-deep(.dark .article-content h2) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
+    border-bottom: 1px solid;
+    border-color: rgb(55 65 81 / 1);
+}
+
 ::v-deep(.article-content h3) {
     font-size: 20px;
     margin-top: 40px;
     margin-bottom: 16px;
     font-weight: 600;
+}
+
+::v-deep(.dark .article-content h3) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
 }
 
 ::v-deep(.article-content h4) {
@@ -362,6 +384,11 @@ const handleMouseLeave = (event) => {
     font-weight: 600;
 }
 
+::v-deep(.dark .article-content h4) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
+}
+
 ::v-deep(.article-content h5) {
     font-size: 16px;
     margin-top: 30px;
@@ -369,11 +396,21 @@ const handleMouseLeave = (event) => {
     font-weight: 600;
 }
 
+::v-deep(.dark .article-content h5) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
+}
+
 ::v-deep(.article-content h6) {
     font-size: 16px;
     margin-top: 30px;
     margin-bottom: 14px;
     font-weight: 600;
+}
+
+::v-deep(.dark .article-content h6) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
 }
 
 /* p 段落样式 */
@@ -388,6 +425,10 @@ const handleMouseLeave = (event) => {
     font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft Yahei, Arial, sans-serif;
 }
 
+::v-deep(.dark .article-content p) {
+    color: #9e9e9e;
+}
+
 /* blockquote 引用样式 */
 ::v-deep(.article-content blockquote) {
     border-left: 2.3px solid rgb(52, 152, 219);
@@ -397,6 +438,17 @@ const handleMouseLeave = (event) => {
     font-size: 16px;
     margin-bottom: 20px;
     padding: 24px;
+}
+
+::v-deep(.dark .article-content blockquote) {
+    quotes: none;
+    --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+    border-left: 2.3px solid #555;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 0.25rem 0 0.25rem 1rem;
 }
 
 /* 设置 blockquote 中最后一个 p 标签的 margin-bottom 为 0 */
@@ -423,6 +475,11 @@ const handleMouseLeave = (event) => {
     padding-left: 2rem;
 }
 
+::v-deep(.dark .article-content ul) {
+    padding-left: 2rem;
+    color: #9e9e9e;
+}
+
 ::v-deep(.article-content > ul) {
     margin-bottom: 20px;
 }
@@ -446,6 +503,10 @@ const handleMouseLeave = (event) => {
 ::v-deep(.article-content ol) {
     list-style-type: decimal;
     padding-left: 2rem;
+}
+
+::v-deep(.dark .article-content ol) {
+    color: #9e9e9e;
 }
 
 /* 图片样式 */
@@ -483,6 +544,16 @@ img:focus) {
     border-radius: 4px;
     color: rgb(41, 128, 185);
     background-color: rgba(27, 31, 35, 0.05);
+    font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
+}
+
+::v-deep(.dark .article-content code:not(pre code)) {
+    padding: 2px 4px;
+    margin: 0 2px;
+    font-size: .85em;
+    border-radius: 5px;
+    color: #abb2bf;
+    background: #333;
     font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
 }
 
@@ -542,9 +613,34 @@ img:focus) {
     background-color: #f6f8fa;
 }
 
+::v-deep(.dark table tr) {
+    background-color: rgb(31 41 55 / 1);
+}
+
+::v-deep(.dark table) {
+    color: #9e9e9e;
+}
+
+::v-deep(.dark table th) {
+    border: 1px solid #394048;
+}
+
+::v-deep(.dark table td) {
+    border: 1px solid #394048;
+}
+
+::v-deep(.dark table tr:nth-child(2n)) {
+    background-color: rgb(21 41 55 / 1);
+}
+
 /* hr 横线 */
 ::v-deep(hr) {
     margin-bottom: 20px;
+}
+
+::v-deep(.dark hr) {
+    --tw-border-opacity: 1;
+    border-color: rgb(55 65 81 / var(--tw-border-opacity));
 }
 
 ::v-deep(.copy-code-btn) {
