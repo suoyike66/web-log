@@ -3,6 +3,7 @@ package com.suoyike.weblog.web.controller;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.tag.FindTagArticlePageListReqVO;
+import com.suoyike.weblog.web.model.vo.tag.FindTagListReqVO;
 import com.suoyike.weblog.web.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,8 +31,8 @@ public class TagController {
     @PostMapping("/list")
     @ApiOperation(value = "前台获取标签列表")
     @ApiOperationLog(description = "前台获取标签列表")
-    public Response findTagList() {
-        return tagService.findTagList();
+    public Response findTagList(@RequestBody @Validated FindTagListReqVO findTagListReqVO) {
+        return tagService.findTagList(findTagListReqVO);
     }
 
     @PostMapping("/article/list")

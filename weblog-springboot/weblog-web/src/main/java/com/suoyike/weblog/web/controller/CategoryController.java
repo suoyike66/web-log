@@ -3,6 +3,7 @@ package com.suoyike.weblog.web.controller;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.category.FindCategoryArticlePageListReqVO;
+import com.suoyike.weblog.web.model.vo.category.FindCategoryListReqVO;
 import com.suoyike.weblog.web.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,8 +31,8 @@ public class CategoryController {
     @PostMapping("/list")
     @ApiOperation(value = "前台获取分类列表")
     @ApiOperationLog(description = "前台获取分类列表")
-    public Response findCategoryList() {
-        return categoryService.findCategoryList();
+    public Response findCategoryList(@RequestBody @Validated FindCategoryListReqVO findCategoryListReqVO) {
+        return categoryService.findCategoryList(findCategoryListReqVO);
     }
 
     @PostMapping("/article/list")
