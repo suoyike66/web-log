@@ -19,6 +19,22 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/blog': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/tag': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/statistics': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/category': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
     }
   },
   plugins: [

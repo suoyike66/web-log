@@ -16,6 +16,7 @@ import com.suoyike.weblog.web.model.vo.article.*;
 import com.suoyike.weblog.web.model.vo.category.FindCategoryListRspVO;
 import com.suoyike.weblog.web.model.vo.tag.FindTagListRspVO;
 import com.suoyike.weblog.web.service.ArticleService;
+import com.suoyike.weblog.web.utils.MarkdownStatsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -160,7 +161,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 查询正文
         ArticleContentDO articleContentDO = articleContentMapper.selectByArticleId(articleId);
+        String content = articleContentDO.getContent();
 
+        // 计算 md 正文字数
+        Integer totalWords = MarkdownStatsUtil.calculateWordCount(content);
         // 判断文章内容是否存在
         if (Objects.isNull(articleContentDO)) {
             log.warn("==> 该文章内容不存在, articleId: {}", articleId);
@@ -169,11 +173,12 @@ public class ArticleServiceImpl implements ArticleService {
 
         // DO 转 VO
         FindArticleDetailRspVO vo = FindArticleDetailRspVO.builder()
-                .id(articleDO.getId())
                 .title(articleDO.getTitle())
                 .createTime(articleDO.getCreateTime())
-                .content(MarkdownHelper.convertMarkdown2Html(articleContentDO.getContent()))
+                .content(MarkdownHelper.convertMarkdown2Html(content))
                 .readNum(articleDO.getReadNum())
+                .totalWords(totalWords)
+                .readTime(MarkdownStatsUtil.calculateReadingTime(totalWords))
                 .build();
 
         // 查询所属分类
