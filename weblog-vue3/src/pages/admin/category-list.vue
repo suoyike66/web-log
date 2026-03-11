@@ -32,6 +32,7 @@
             <!-- 分页列表 -->
             <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading">
                 <el-table-column prop="name" label="分类名称" width="180" />
+                <el-table-column prop="articlesTotal" label="文章数" width="100" />
                 <el-table-column prop="createTime" label="创建时间" width="180" />
                 <el-table-column label="操作" >
                     <template #default="scope">
@@ -55,7 +56,7 @@
         </el-card>
 
     <!-- 添加分类 -->
-    <FormDialog ref="formDialogRef" title="添加文章分类" :destroy-on-close="true" @submit="onSubmit">
+    <FormDialog ref="formDialogRef" title="添加文章分类" destroyOnClose @submit="onSubmit">
         <el-form ref="formRef" :rules="rules" :model="form">
                     <el-form-item label="分类名称" prop="name" label-width="80px" size="large">
                         <el-input v-model="form.name" placeholder="请输入分类名称" maxlength="20" show-word-limit clearable/>
@@ -80,8 +81,8 @@ const searchCategoryName = ref('')
 const pickDate = ref('')
 
 // 查询条件：开始结束时间
-const startDate = ref(null)
-const endDate = ref(null)
+const startDate = reactive({})
+const endDate = reactive({})
 
 // 监听日期组件改变事件，并将开始结束时间设置到变量中
 const datepickerChange = (e) => {
@@ -204,7 +205,8 @@ const onSubmit = () => {
             console.log('表单验证不通过')
             return false
         }
-        // 
+        
+        // 显示提交按钮 loading
         formDialogRef.value.showBtnLoading()
         addCategory(form).then((res) => {
             if (res.success == true) {
@@ -221,7 +223,7 @@ const onSubmit = () => {
                 // 提示错误消息
                 showMessage(message, 'error')
             }
-        }).finally(() => formDialogRef.value.closeBtnLoading())
+        }).finally(() => formDialogRef.value.closeBtnLoading()) // 隐藏提交按钮 loading
 
     })
 }
