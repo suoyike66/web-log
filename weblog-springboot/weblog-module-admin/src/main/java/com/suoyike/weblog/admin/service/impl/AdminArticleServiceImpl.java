@@ -3,6 +3,8 @@ package com.suoyike.weblog.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suoyike.weblog.admin.convert.ArticleDetailConvert;
+import com.suoyike.weblog.admin.event.PublishArticleEvent;
+import com.suoyike.weblog.admin.event.UpdateArticleEvent;
 import com.suoyike.weblog.admin.model.vo.article.*;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.domain.dos.*;
@@ -44,6 +46,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     private TagMapper tagMapper;
     @Autowired
     private ArticleTagRelMapper articleTagRelMapper;
+    @Autowired
+    private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     /**
      * 发布文章
@@ -93,6 +97,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         // 4. 保存文章关联的标签集合
         List<Long> tagIds = publishArticleReqVO.getTagIds();
         insertTagsByTagIds(articleId, tagIds);
+
+        // 5. 发布文章发布事件
+        eventPublisher.publishEvent(new PublishArticleEvent(this, articleId));
 
         return Response.success();
     }
@@ -311,6 +318,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         articleTagRelMapper.deleteByArticleId(articleId);
         List<Long> tagIds = updateArticleReqVO.getTagIds();
         insertTagsByTagIds(articleId, tagIds);
+
+        // 5. 发布文章更新事件
+        eventPublisher.publishEvent(new UpdateArticleEvent(this, articleId));
 
         return Response.success();
     }
