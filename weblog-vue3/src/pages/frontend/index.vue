@@ -53,6 +53,10 @@
                                     <a @click="goCategoryArticleListPage(article.category.id, article.category.name)" class="cursor-pointer text-gray-400 hover:underline transition-colors duration-200">{{ article.category.name }}</a>
                                 </p>
                             </div>
+                            <!-- 是否置顶 -->
+                            <div v-if="article.isTop" class="absolute inline-flex items-center justify-center w-14 h-7 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                                置顶
+                            </div>
                         </div>
                     </div>
                 </div>
