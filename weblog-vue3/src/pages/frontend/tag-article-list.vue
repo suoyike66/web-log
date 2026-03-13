@@ -321,7 +321,7 @@ watch(route, (newRoute, oldRoute) => {
 // 当前页码
 const current = ref(1)
 // 每页显示的文章数
-const size = ref(1)
+const size = ref(10)
 // 总文章数
 const total = ref(0)
 // 总共多少页
