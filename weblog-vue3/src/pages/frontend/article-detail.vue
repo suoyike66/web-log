@@ -190,8 +190,10 @@
                     <TagListCard></TagListCard>
                 </div>
                 
-                <!-- 文章目录 -->
-                <Toc></Toc>
+                <!-- 文章目录 - 吸顶效果 -->
+                <div class="sticky top-[5.5rem]">
+                    <Toc></Toc>
+                </div>
 
             </aside>
         </div>
@@ -344,6 +346,19 @@ const handleMouseLeave = (event) => {
     color: #292525;
     line-height: 150%;
     font-family: PingFang SC, Helvetica Neue, Helvetica, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", Arial, sans-serif;
+}
+
+::v-deep(.article-content h1) {
+    font-size: 32px;
+    margin-top: 40px;
+    margin-bottom: 26px;
+    font-weight: 700;
+    line-height: 140%;
+}
+
+::v-deep(.dark .article-content h1) {
+    --tw-text-opacity: 1;
+    color: rgb(226 232 240/var(--tw-text-opacity));
 }
 
 ::v-deep(.article-content h2) {
