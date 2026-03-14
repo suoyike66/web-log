@@ -14,6 +14,7 @@ import AdminBlogSettings from '@/pages/admin/blog-setting.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Admin from '@/layouts/admin/admin.vue'
 import NotFound from '@/pages/frontend/404.vue'
+import AdminWikiList from '@/pages/admin/wiki-list.vue'
 
 // 统一在这里声明所有路由
 const routes = [
@@ -119,6 +120,13 @@ const routes = [
         component: AdminBlogSettings,
         meta: {
           title: '博客设置'
+        }
+      },
+      {
+        path: "/admin/wiki/list",
+        component: AdminWikiList,
+        meta: {
+          title: '知识库管理'
         }
       },
     ]
