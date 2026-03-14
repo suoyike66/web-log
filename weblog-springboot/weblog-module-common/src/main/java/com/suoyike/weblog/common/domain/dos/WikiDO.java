@@ -10,18 +10,17 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * @author: 蓑衣客
- * @url: www.suoyike.com
- * @date: 2026-01-20 11:13
- * @description: 文章
- **/
+/*
+* @author suoyike
+* @date 2026/03/14 15：12
+* @description 知识库
+*/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName("t_article")
-public class ArticleDO {
+@TableName("t_wiki")
+public class WikiDO {
 
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -38,10 +37,7 @@ public class ArticleDO {
 
     private Boolean isDeleted;
 
-    private Long readNum;
-
     private Integer weight;
 
-    private Integer type;
+    private Boolean isPublish;
 }
-

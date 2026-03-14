@@ -11,37 +11,36 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * @author: 蓑衣客
- * @url: www.suoyike.com
- * @date: 2026-01-20 11:13
- * @description: 文章
- **/
+ * @author suoyike
+ * @date 2026/03/14 15:12
+ * @description 知识库目录
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName("t_article")
-public class ArticleDO {
+@TableName("t_wiki_catalog")
+public class WikiCatalogDO {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    private Long wikiId;
+
+    private Long articleId;
+
     private String title;
 
-    private String cover;
+    private Integer level;
 
-    private String summary;
+    private Long parentId;
+
+    private Integer sort;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
 
     private Boolean isDeleted;
-
-    private Long readNum;
-
-    private Integer weight;
-
-    private Integer type;
 }
-
