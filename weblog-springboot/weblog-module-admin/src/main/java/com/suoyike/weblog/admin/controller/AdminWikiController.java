@@ -75,7 +75,7 @@ public class AdminWikiController {
     public Response findWikiCatalogList(@RequestBody @Validated FindWikiCatalogListReqVO findWikiCatalogListReqVO) {
         return wikiService.findWikiCatalogList(findWikiCatalogListReqVO);
     }
-    
+
     @PostMapping("/catalog/update")
     @ApiOperation(value = "更新知识库目录")
     @ApiOperationLog(description = "更新知识库目录")

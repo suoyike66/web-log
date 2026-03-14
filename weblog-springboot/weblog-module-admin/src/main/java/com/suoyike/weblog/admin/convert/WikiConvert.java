@@ -1,8 +1,8 @@
-package com.suoyike.weblog.common.constant;
+package com.suoyike.weblog.admin.convert;
 
-import com.suoyike.weblog.common.model.vo.wiki.FindWikiPageListRspVO;
+import com.suoyike.weblog.admin.model.vo.wiki.FindWikiPageListRspVO;
 import com.suoyike.weblog.common.domain.dos.WikiDO;
-import org.apache.ibatis.annotations.Mapper;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
