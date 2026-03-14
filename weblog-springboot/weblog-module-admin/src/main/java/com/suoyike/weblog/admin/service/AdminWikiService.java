@@ -2,6 +2,7 @@ package com.suoyike.weblog.admin.service;
 
 import com.suoyike.weblog.admin.model.vo.wiki.AddWikiReqVO;
 import com.suoyike.weblog.admin.model.vo.wiki.DeleteWikiReqVO;
+import com.suoyike.weblog.admin.model.vo.wiki.FindWikiPageListReqVO;
 import com.suoyike.weblog.common.utils.Response;
 
 public interface AdminWikiService {
@@ -20,4 +21,10 @@ public interface AdminWikiService {
      */
     Response deleteWiki(DeleteWikiReqVO deleteWikiReqVO);
 
+    /**
+     * 知识库分页查询
+     * @param findWikiPageListReqVO
+     * @return
+     */
+    Response findWikiPageList(FindWikiPageListReqVO findWikiPageListReqVO);
 }

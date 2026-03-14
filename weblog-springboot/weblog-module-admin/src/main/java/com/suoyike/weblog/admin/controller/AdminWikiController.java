@@ -2,6 +2,7 @@ package com.suoyike.weblog.admin.controller;
 
 import com.suoyike.weblog.admin.model.vo.wiki.AddWikiReqVO;
 import com.suoyike.weblog.admin.model.vo.wiki.DeleteWikiReqVO;
+import com.suoyike.weblog.admin.model.vo.wiki.FindWikiPageListReqVO;
 import com.suoyike.weblog.admin.service.AdminWikiService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
@@ -38,5 +39,13 @@ public class AdminWikiController {
     public Response deleteWiki(@RequestBody @Validated DeleteWikiReqVO deleteWikiReqVO) {
         return wikiService.deleteWiki(deleteWikiReqVO);
     }
+
+    @PostMapping("/list")
+    @ApiOperation(value = "查询知识库分页数据")
+    @ApiOperationLog(description = "查询知识库分页数据")
+    public Response findWikiPageList(@RequestBody @Validated FindWikiPageListReqVO findWikiPageListReqVO) {
+        return wikiService.findWikiPageList(findWikiPageListReqVO);
+    }
+
 
 }
