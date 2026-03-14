@@ -1,8 +1,6 @@
 package com.suoyike.weblog.admin.controller;
 
-import com.suoyike.weblog.admin.model.vo.wiki.AddWikiReqVO;
-import com.suoyike.weblog.admin.model.vo.wiki.DeleteWikiReqVO;
-import com.suoyike.weblog.admin.model.vo.wiki.FindWikiPageListReqVO;
+import com.suoyike.weblog.admin.model.vo.wiki.*;
 import com.suoyike.weblog.admin.service.AdminWikiService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
@@ -47,5 +45,19 @@ public class AdminWikiController {
         return wikiService.findWikiPageList(findWikiPageListReqVO);
     }
 
+    @PostMapping("/isTop/update")
+    @ApiOperation(value = "更新知识库置顶状态")
+    @ApiOperationLog(description = "更新知识库置顶状态")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response updateWikiIsTop(@RequestBody @Validated UpdateWikiIsTopReqVO updateWikiIsTopReqVO) {
+        return wikiService.updateWikiIsTop(updateWikiIsTopReqVO);
+    }
 
+    @PostMapping("/isPublish/update")
+    @ApiOperation(value = "更新知识库发布状态")
+    @ApiOperationLog(description = "更新知识库发布状态")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response updateWikiIsPublish(@RequestBody @Validated UpdateWikiIsPublishReqVO updateWikiIsPublishReqVO) {
+        return wikiService.updateWikiIsPublish(updateWikiIsPublishReqVO);
+    }
 }

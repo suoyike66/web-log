@@ -1,9 +1,7 @@
 package com.suoyike.weblog.admin.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.suoyike.weblog.admin.model.vo.wiki.AddWikiReqVO;
-import com.suoyike.weblog.admin.model.vo.wiki.DeleteWikiReqVO;
-import com.suoyike.weblog.admin.model.vo.wiki.FindWikiPageListReqVO;
+import com.suoyike.weblog.admin.model.vo.wiki.*;
 import com.suoyike.weblog.admin.service.AdminWikiService;
 import com.suoyike.weblog.common.constant.WikiConvert;
 import com.suoyike.weblog.common.domain.dos.ArticleDO;
@@ -146,5 +144,46 @@ public class AdminWikiServiceImpl implements AdminWikiService {
         return PageResponse.success(wikiDOPage, vos);
     }
 
+    /**
+     * 更新知识库置顶状态
+     *
+     * @param updateWikiIsTopReqVO
+     * @return
+     */
+    @Override
+    public Response updateWikiIsTop(UpdateWikiIsTopReqVO updateWikiIsTopReqVO) {
+        Long wikiId = updateWikiIsTopReqVO.getId();
+        Boolean isTop = updateWikiIsTopReqVO.getIsTop();
+
+        // 默认权重值为 0 ，即不参与置顶
+        Integer weight = 0;
+        // 若设置为置顶
+        if (isTop) {
+            // 查询最大权重值
+            WikiDO wikiDO = wikiMapper.selectMaxWeight();
+            Integer maxWeight = wikiDO.getWeight();
+            // 最大权重值加一
+            weight = maxWeight + 1;
+        }
+
+        // 更新该知识库的权重值
+        wikiMapper.updateById(WikiDO.builder().id(wikiId).weight(weight).build());
+        return Response.success();
+    }
+
+    /**
+     * 更新知识库发布状态
+     *
+     * @param updateWikiIsPublishReqVO
+     * @return
+     */
+    @Override
+    public Response updateWikiIsPublish(UpdateWikiIsPublishReqVO updateWikiIsPublishReqVO) {
+        Long wikiId = updateWikiIsPublishReqVO.getId();
+        Boolean isPublish = updateWikiIsPublishReqVO.getIsPublish();
+        // 更新发布状态
+        wikiMapper.updateById(WikiDO.builder().id(wikiId).isPublish(isPublish).build());
+        return Response.success();
+    }
 
 }
