@@ -1,6 +1,7 @@
 package com.suoyike.weblog.admin.controller;
 
 import com.suoyike.weblog.admin.model.vo.wiki.AddWikiReqVO;
+import com.suoyike.weblog.admin.model.vo.wiki.DeleteWikiReqVO;
 import com.suoyike.weblog.admin.service.AdminWikiService;
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
@@ -28,6 +29,14 @@ public class AdminWikiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response addWiki(@RequestBody @Validated AddWikiReqVO addWikiReqVO) {
         return wikiService.addWiki(addWikiReqVO);
+    }
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "知识库删除")
+    @ApiOperationLog(description = "知识库删除")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response deleteWiki(@RequestBody @Validated DeleteWikiReqVO deleteWikiReqVO) {
+        return wikiService.deleteWiki(deleteWikiReqVO);
     }
 
 }
