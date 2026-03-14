@@ -2,11 +2,14 @@ package com.suoyike.weblog.web.controller;
 
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.model.vo.wiki.FindWikiCatalogListReqVO;
 import com.suoyike.weblog.web.service.WikiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,13 @@ public class WikiController {
     @ApiOperationLog(description = "获取知识库数据")
     public Response findWikiList() {
         return wikiService.findWikiList();
+    }
+
+    @PostMapping("/catalog/list")
+    @ApiOperation(value = "获取知识库目录数据")
+    @ApiOperationLog(description = "获取知识库目录数据")
+    public Response findWikiCatalogList(@RequestBody @Validated FindWikiCatalogListReqVO findWikiCatalogListReqVO) {
+        return wikiService.findWikiCatalogList(findWikiCatalogListReqVO);
     }
 
 }
