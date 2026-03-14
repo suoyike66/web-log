@@ -2,6 +2,7 @@ package com.suoyike.weblog.web.controller;
 
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.model.vo.wiki.FindWikiArticlePreNextReqVO;
 import com.suoyike.weblog.web.model.vo.wiki.FindWikiCatalogListReqVO;
 import com.suoyike.weblog.web.service.WikiService;
 import io.swagger.annotations.Api;
@@ -33,6 +34,13 @@ public class WikiController {
     @ApiOperationLog(description = "获取知识库目录数据")
     public Response findWikiCatalogList(@RequestBody @Validated FindWikiCatalogListReqVO findWikiCatalogListReqVO) {
         return wikiService.findWikiCatalogList(findWikiCatalogListReqVO);
+    }
+
+    @PostMapping("/article/preNext")
+    @ApiOperation(value = "获取知识库文章上下页")
+    @ApiOperationLog(description = "获取知识库文章上下页")
+    public Response findArticlePreNext(@RequestBody FindWikiArticlePreNextReqVO findWikiArticlePreNextReqVO) {
+        return wikiService.findArticlePreNext(findWikiArticlePreNextReqVO);
     }
 
 }

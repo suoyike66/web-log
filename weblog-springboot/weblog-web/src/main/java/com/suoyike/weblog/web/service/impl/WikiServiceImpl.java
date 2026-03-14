@@ -7,9 +7,8 @@ import com.suoyike.weblog.common.domain.mapper.WikiCatalogMapper;
 import com.suoyike.weblog.common.domain.mapper.WikiMapper;
 import com.suoyike.weblog.common.enums.WikiCatalogLevelEnum;
 import com.suoyike.weblog.common.utils.Response;
-import com.suoyike.weblog.web.model.vo.wiki.FindWikiCatalogListReqVO;
-import com.suoyike.weblog.web.model.vo.wiki.FindWikiCatalogListRspVO;
-import com.suoyike.weblog.web.model.vo.wiki.FindWikiListRspVO;
+import com.suoyike.weblog.web.model.vo.article.FindPreNextArticleRspVO;
+import com.suoyike.weblog.web.model.vo.wiki.*;
 import com.suoyike.weblog.web.service.WikiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +123,46 @@ public class WikiServiceImpl implements WikiService {
         }
 
         return Response.success(vos);
+    }
+
+    /**
+     * 获取上下页
+     *
+     * @param findWikiArticlePreNextReqVO
+     * @return
+     */
+    @Override
+    public Response findArticlePreNext(FindWikiArticlePreNextReqVO findWikiArticlePreNextReqVO) {
+        // 知识库 ID
+        Long wikiId = findWikiArticlePreNextReqVO.getId();
+        // 文章 ID
+        Long articleId = findWikiArticlePreNextReqVO.getArticleId();
+
+        FindWikiArticlePreNextRspVO vo = new FindWikiArticlePreNextRspVO();
+        // 获取当前文章所属知识库的目录
+        WikiCatalogDO wikiCatalogDO = wikiCatalogMapper.selectByWikiIdAndArticleId(wikiId, articleId);
+
+        // 构建上一篇文章 VO
+        WikiCatalogDO preArticleDO = wikiCatalogMapper.selectPreArticle(wikiId, wikiCatalogDO.getId());
+        if (Objects.nonNull(preArticleDO)) {
+            FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(preArticleDO.getArticleId())
+                    .articleTitle(preArticleDO.getTitle())
+                    .build();
+            vo.setPreArticle(preArticleVO);
+        }
+
+        // 构建下一篇文章 VO
+        WikiCatalogDO nextArticleDO = wikiCatalogMapper.selectNextArticle(wikiId, wikiCatalogDO.getId());
+        if (Objects.nonNull(nextArticleDO)) {
+            FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(nextArticleDO.getArticleId())
+                    .articleTitle(nextArticleDO.getTitle())
+                    .build();
+            vo.setNextArticle(nextArticleVO);
+        }
+
+        return Response.success(vo);
     }
 
 }
