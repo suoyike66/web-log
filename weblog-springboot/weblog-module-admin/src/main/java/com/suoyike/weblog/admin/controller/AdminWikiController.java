@@ -75,5 +75,13 @@ public class AdminWikiController {
     public Response findWikiCatalogList(@RequestBody @Validated FindWikiCatalogListReqVO findWikiCatalogListReqVO) {
         return wikiService.findWikiCatalogList(findWikiCatalogListReqVO);
     }
+    
+    @PostMapping("/catalog/update")
+    @ApiOperation(value = "更新知识库目录")
+    @ApiOperationLog(description = "更新知识库目录")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response updateWikiCatalogs(@RequestBody @Validated UpdateWikiCatalogReqVO updateWikiCatalogsReqVO) {
+        return wikiService.updateWikiCatalogs(updateWikiCatalogsReqVO);
+    }
 
 }
