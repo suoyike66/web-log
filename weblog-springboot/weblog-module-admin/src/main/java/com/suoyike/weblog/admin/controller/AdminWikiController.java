@@ -60,4 +60,13 @@ public class AdminWikiController {
     public Response updateWikiIsPublish(@RequestBody @Validated UpdateWikiIsPublishReqVO updateWikiIsPublishReqVO) {
         return wikiService.updateWikiIsPublish(updateWikiIsPublishReqVO);
     }
+
+    @PostMapping("/update")
+    @ApiOperation(value = "更新知识库")
+    @ApiOperationLog(description = "更新知识库")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response updateWiki(@RequestBody @Validated UpdateWikiReqVO updateWikiReqVO) {
+        return wikiService.updateWiki(updateWikiReqVO);
+    }
+
 }
