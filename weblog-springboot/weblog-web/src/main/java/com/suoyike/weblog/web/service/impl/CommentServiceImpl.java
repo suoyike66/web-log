@@ -10,14 +10,14 @@ import com.suoyike.weblog.common.enums.CommentStatusEnum;
 import com.suoyike.weblog.common.enums.ResponseCodeEnum;
 import com.suoyike.weblog.common.exception.BizException;
 import com.suoyike.weblog.common.utils.Response;
-import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoReqVO;
-import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoRspVO;
-import com.suoyike.weblog.web.model.vo.comment.PublishCommentReqVO;
+import com.suoyike.weblog.web.convert.CommentConvert;
+import com.suoyike.weblog.web.event.PublishCommentEvent;
+import com.suoyike.weblog.web.model.vo.comment.*;
 import com.suoyike.weblog.web.service.CommentService;
 import com.suoyike.weblog.web.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,9 +26,7 @@ import toolgood.words.IllegalWordsSearch;
 import toolgood.words.IllegalWordsSearchResult;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,9 +47,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private IllegalWordsSearch wordsSearch;
-
-    @Value("${api-key}")
-    private String apiKey;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public Response findQQUserInfo(FindQQUserInfoReqVO findQQUserInfoReqVO) {
@@ -64,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // 请求第三方接口
-        String url = String.format("http://api.guiguiya.com/api/qq_info?qq=%s&apiKey=%s", qq, apiKey);
+        String url = String.format("https://api.qjqq.cn/api/qqinfo?qq=%s", qq);
         String result = restTemplate.getForObject(url, String.class);
 
         log.info("通过 QQ 号获取用户信息: {}", result);
@@ -74,18 +71,12 @@ public class CommentServiceImpl implements CommentService {
         try {
             Map<String, Object> map = objectMapper.readValue(result, Map.class);
             if (Objects.equals(map.get("code"), HttpStatus.OK.value())) {
-
-                // 获取响应参数中 data 节点下的数据
-                Map<String, Object> data = (Map<String, Object>) map.get("data");
-
-                if (!CollectionUtils.isEmpty(data)) {
-                    // 获取用户头像、昵称、邮箱
-                    return Response.success(FindQQUserInfoRspVO.builder()
-                            .avatar(String.valueOf(data.get("avatar_apiurl_1")))
-                            .nickname(String.valueOf(data.get("name")))
-                            .mail(qq.trim() + "@qq.com") // 组合邮箱地址
-                            .build());
-                }
+                // 获取用户头像、昵称、邮箱
+                return Response.success(FindQQUserInfoRspVO.builder()
+                        .avatar(String.valueOf(map.get("imgurl")))
+                        .nickname(String.valueOf(map.get("name")))
+                        .mail(String.valueOf(map.get("mail")))
+                        .build());
             }
 
             return Response.fail();
@@ -129,7 +120,6 @@ public class CommentServiceImpl implements CommentService {
         // 评论内容是否包含敏感词
         boolean isContainSensitiveWord = false;
         // 是否开启了敏感词过滤
-        // 是否开启了敏感词过滤
         if (isCommentSensiWordOpen) {
             // 校验评论中是否包含敏感词
             isContainSensitiveWord = wordsSearch.ContainsAny(content);
@@ -146,7 +136,6 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        // 构建 DO 对象
         CommentDO commentDO = CommentDO.builder()
                 .avatar(publishCommentReqVO.getAvatar())
                 .content(content)
@@ -161,8 +150,12 @@ public class CommentServiceImpl implements CommentService {
                 .reason(reason)
                 .build();
 
-        // 新增评论
         commentMapper.insert(commentDO);
+
+        Long commentId = commentDO.getId();
+
+        // 发送评论发布事件
+        eventPublisher.publishEvent(new PublishCommentEvent(this, commentId));
 
         // 给予前端对应的提示信息
         if (isContainSensitiveWord)
@@ -172,6 +165,62 @@ public class CommentServiceImpl implements CommentService {
             throw new BizException(ResponseCodeEnum.COMMENT_WAIT_EXAMINE);
 
         return Response.success();
+    }
+
+    /**
+     * 查询页面所有评论
+     *
+     * @param findCommentListReqVO
+     * @return
+     */
+    @Override
+    public Response findCommentList(FindCommentListReqVO findCommentListReqVO) {
+        // 路由地址
+        String routerUrl = findCommentListReqVO.getRouterUrl();
+
+        // 根据该路由地址下所有评论（仅查询状态正常的）
+        List<CommentDO> commentDOS = commentMapper.selectByRouterUrlAndStatus(routerUrl, CommentStatusEnum.NORMAL.getCode());
+        // 总评论数
+        Integer total = commentDOS.size();
+
+        List<FindCommentItemRspVO> vos = null;
+        // DO 转 VO
+        if (!CollectionUtils.isEmpty(commentDOS)) {
+            // 一级评论
+            vos = commentDOS.stream()
+                    .filter(commentDO -> Objects.isNull(commentDO.getParentCommentId())) // parentCommentId 父级 ID 为空，则表示为一级评论
+                    .map(commentDO -> CommentConvert.INSTANCE.convertDO2VO(commentDO))
+                    .collect(Collectors.toList());
+
+            // 循环设置评论回复数据
+            vos.forEach(vo -> {
+                Long commentId = vo.getId();
+                List<FindCommentItemRspVO> childComments = commentDOS.stream()
+                        .filter(commentDO -> Objects.equals(commentDO.getParentCommentId(), commentId)) // 过滤出一级评论下所有子评论
+                        .sorted(Comparator.comparing(CommentDO::getCreateTime)) // 按发布时间升序排列
+                        .map(commentDO -> {
+                            FindCommentItemRspVO findPageCommentRspVO = CommentConvert.INSTANCE.convertDO2VO(commentDO);
+                            Long replyCommentId = commentDO.getReplyCommentId();
+                            // 若二级评论的 replayCommentId 不等于一级评论 ID, 前端则需要展示【回复 @ xxx】，需要设置回复昵称
+                            if (!Objects.equals(replyCommentId, commentId)) {
+                                // 设置回复用户的昵称
+                                Optional<CommentDO> optionalCommentDO = commentDOS.stream()
+                                        .filter(commentDO1 -> Objects.equals(commentDO1.getId(), replyCommentId)).findFirst();
+                                if (optionalCommentDO.isPresent()) {
+                                    findPageCommentRspVO.setReplyNickname(optionalCommentDO.get().getNickname());
+                                }
+                            }
+                            return findPageCommentRspVO;
+                        }).collect(Collectors.toList());
+
+                vo.setChildComments(childComments);
+            });
+        }
+
+        return Response.success(FindCommentListRspVO.builder()
+                .total(total)
+                .comments(vos)
+                .build());
     }
 
 }

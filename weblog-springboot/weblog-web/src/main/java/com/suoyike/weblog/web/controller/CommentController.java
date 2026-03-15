@@ -2,6 +2,7 @@ package com.suoyike.weblog.web.controller;
 
 import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
+import com.suoyike.weblog.web.model.vo.comment.FindCommentListReqVO;
 import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoReqVO;
 import com.suoyike.weblog.web.model.vo.comment.PublishCommentReqVO;
 import com.suoyike.weblog.web.service.CommentService;
@@ -36,4 +37,10 @@ public class CommentController {
         return commentService.publishComment(publishCommentReqVO);
     }
 
+    @PostMapping("/list")
+    @ApiOperation(value = "获取页面所有评论")
+    @ApiOperationLog(description = "获取页面所有评论")
+    public Response findPageComments(@RequestBody @Validated FindCommentListReqVO findCommentListReqVO) {
+        return commentService.findCommentList(findCommentListReqVO);
+    }
 }
