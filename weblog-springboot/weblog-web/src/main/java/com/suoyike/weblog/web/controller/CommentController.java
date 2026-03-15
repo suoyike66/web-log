@@ -35,5 +35,5 @@ public class CommentController {
     public Response publishComment(@RequestBody @Validated PublishCommentReqVO publishCommentReqVO) {
         return commentService.publishComment(publishCommentReqVO);
     }
-    
+
 }
