@@ -217,12 +217,14 @@ import { ref, reactive } from 'vue'
 import { Search, RefreshRight } from '@element-plus/icons-vue'
 import { getArticlePageList, deleteArticle, publishArticle, getArticleDetail, updateArticle } from '@/api/admin/article'
 import { uploadFile } from '@/api/admin/file'
-import { getCategorySelectList } from '@/api/admin/category'
+import { getCategorySelectList, clearCategoryCache as clearAdminCategoryCache } from '@/api/admin/category'
+import { clearCategoryCache as clearFrontendCategoryCache } from '@/api/frontend/category'
 import { searchTags, getTagSelectList } from '@/api/admin/tag'
 import moment from 'moment'
 import { showMessage, showModel } from '@/composables/util'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
+import eventBus from '@/composables/eventBus'
 import { useRouter } from 'vue-router'
 import { Check, Close } from '@element-plus/icons-vue'
 import { updateArticleIsTop } from '@/api/admin/article'
@@ -336,6 +338,10 @@ const deleteArticleSubmit = (row) => {
             showMessage('删除成功')
             // 重新请求分页接口，渲染数据
             getTableData()
+            // 重新获取分类列表，更新分类文章统计数
+            refreshCategories()
+            // 触发文章删除事件，通知分类组件更新
+            eventBus.emit('articleDeleted')
         })
     }).catch(() => {
         console.log('取消了')
@@ -442,10 +448,21 @@ const onUploadImg = async (files, callback) => {
 
 // 文章分类
 const categories = ref([])
-getCategorySelectList().then((e) => {
-    console.log('获取分类数据')
-    categories.value = e.data
-})
+// 清除分类缓存并刷新分类列表
+const refreshCategories = () => {
+    // 先清除后台分类相关缓存
+    clearAdminCategoryCache().then(() => {
+        // 再清除前端分类相关缓存
+        clearFrontendCategoryCache().then(() => {
+            // 然后重新获取分类列表
+            getCategorySelectList().then((e) => {
+                console.log('获取分类数据')
+                categories.value = e.data
+            })
+        })
+    })
+}
+refreshCategories()
 
 // 标签 select Loading 状态，默认不显示
 const tagSelectLoading = ref(false)

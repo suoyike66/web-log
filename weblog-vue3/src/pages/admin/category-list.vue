@@ -69,11 +69,12 @@
 
 <script setup>
 import { Search, RefreshRight } from '@element-plus/icons-vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { getCategoryPageList, addCategory, deleteCategory } from '@/api/admin/category'
 import moment from 'moment'
 import { showMessage, showModel } from '@/composables/util'
 import FormDialog from '@/components/FormDialog.vue'
+import eventBus from '@/composables/eventBus'
 
 // 分页查询的分类名称
 const searchCategoryName = ref('')
@@ -248,5 +249,21 @@ const deleteCategorySubmit = (row) => {
         console.log('取消了')
     })
 }
+
+// 监听文章删除事件
+const handleArticleDeleted = () => {
+    // 重新获取分类数据
+    getTableData()
+}
+
+// 组件挂载时订阅事件
+onMounted(() => {
+    eventBus.on('articleDeleted', handleArticleDeleted)
+})
+
+// 组件卸载时取消订阅
+onUnmounted(() => {
+    eventBus.off('articleDeleted', handleArticleDeleted)
+})
 
 </script>

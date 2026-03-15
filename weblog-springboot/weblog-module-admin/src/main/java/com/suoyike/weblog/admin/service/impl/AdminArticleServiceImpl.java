@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suoyike.weblog.admin.convert.ArticleDetailConvert;
 import com.suoyike.weblog.admin.event.PublishArticleEvent;
 import com.suoyike.weblog.admin.event.UpdateArticleEvent;
+import com.suoyike.weblog.admin.event.DeleteArticleEvent;
 import com.suoyike.weblog.admin.model.vo.article.*;
 import com.suoyike.weblog.admin.service.AdminArticleService;
 import com.suoyike.weblog.common.domain.dos.*;
@@ -166,19 +167,22 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     @Transactional(rollbackFor = Exception.class)
     public Response deleteArticle(DeleteArticleReqVO deleteArticleReqVO) {
         Long articleId = deleteArticleReqVO.getId();
-
+    
         // 1. 删除文章
         articleMapper.deleteById(articleId);
-
+    
         // 2. 删除文章内容
         articleContentMapper.deleteByArticleId(articleId);
-
-        // 3. 删除文章-分类关联记录
+    
+        // 3. 删除文章 - 分类关联记录
         articleCategoryRelMapper.deleteByArticleId(articleId);
-
-        // 4. 删除文章-标签关联记录
+    
+        // 4. 删除文章 - 标签关联记录
         articleTagRelMapper.deleteByArticleId(articleId);
-
+    
+        // 5. 发布文章删除事件
+        eventPublisher.publishEvent(new DeleteArticleEvent(this, articleId));
+    
         return Response.success();
     }
 

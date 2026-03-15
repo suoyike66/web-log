@@ -1,4 +1,5 @@
 import axios from "@/axios";
+import { clearCache } from "@/composables/useApiCache";
 
 // 获取分类分页数据
 export function getCategoryPageList(data) {
@@ -22,6 +23,6 @@ export function getCategorySelectList() {
 
 // 清除分类相关缓存
 export function clearCategoryCache() {
-  const { clearCache } = require('@/composables/useApiCache');
   clearCache();
+  return Promise.resolve();
 }

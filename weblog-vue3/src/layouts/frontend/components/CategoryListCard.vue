@@ -60,8 +60,9 @@ dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-
 
 <script setup>
 import { getCategoryList } from '@/api/frontend/category'
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import eventBus from '@/composables/eventBus'
 
 const router = useRouter()
 
@@ -76,9 +77,31 @@ const categories = ref([])
 // 一次显示的分类数
 const size = ref(10)
 
-getCategoryList({ size: size.value }).then((res) => {
-    if (res.success) {
-        categories.value = res.data
-    }
+// 获取分类数据
+const fetchCategories = () => {
+    getCategoryList({ size: size.value }).then((res) => {
+        if (res.success) {
+            categories.value = res.data
+        }
+    })
+}
+
+// 初始获取分类数据
+fetchCategories()
+
+// 监听删除文章事件
+const handleArticleDeleted = () => {
+    // 重新获取分类数据
+    fetchCategories()
+}
+
+// 组件挂载时订阅事件
+onMounted(() => {
+    eventBus.on('articleDeleted', handleArticleDeleted)
+})
+
+// 组件卸载时取消订阅
+onUnmounted(() => {
+    eventBus.off('articleDeleted', handleArticleDeleted)
 })
 </script>
