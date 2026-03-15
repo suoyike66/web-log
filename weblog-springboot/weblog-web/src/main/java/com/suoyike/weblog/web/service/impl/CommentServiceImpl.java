@@ -17,8 +17,8 @@ import com.suoyike.weblog.web.service.CommentService;
 import com.suoyike.weblog.web.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -49,39 +49,68 @@ public class CommentServiceImpl implements CommentService {
     private IllegalWordsSearch wordsSearch;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    
+    @Value("${api-key}")
+    private String apiKey;
 
     @Override
     public Response findQQUserInfo(FindQQUserInfoReqVO findQQUserInfoReqVO) {
         String qq = findQQUserInfoReqVO.getQq();
-
+    
         // 校验 QQ 号
         if (!StringUtil.isPureNumber(qq)) {
-            log.warn("昵称输入的格式不是 QQ 号: {}", qq);
+            log.warn("昵称输入的格式不是 QQ 号：{}", qq);
             throw new BizException(ResponseCodeEnum.NOT_QQ_NUMBER);
         }
-
-        // 请求第三方接口
-        String url = String.format("https://api.qjqq.cn/api/qqinfo?qq=%s", qq);
-        String result = restTemplate.getForObject(url, String.class);
-
-        log.info("通过 QQ 号获取用户信息: {}", result);
-
+    
+        // 请求第三方接口（鬼鬼 API）
+        String url = String.format("https://api.guiguiya.com/api/qq_info?apiKey=%s&qq=%s", apiKey, qq);
+        String result = null;
+            
+        try {
+            result = restTemplate.getForObject(url, String.class);
+            log.info("通过 QQ 号获取用户信息：{}", result);
+        } catch (Exception e) {
+            log.error("请求 QQ 用户信息接口失败，url: {}, qq: {}, error: {}", url, qq, e.getMessage(), e);
+            return Response.fail(ResponseCodeEnum.SYSTEM_ERROR.getErrorCode(), "获取 QQ 用户信息失败，请稍后重试");
+        }
+    
         // 解析响参
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, Object> map = objectMapper.readValue(result, Map.class);
-            if (Objects.equals(map.get("code"), HttpStatus.OK.value())) {
-                // 获取用户头像、昵称、邮箱
-                return Response.success(FindQQUserInfoRspVO.builder()
-                        .avatar(String.valueOf(map.get("imgurl")))
-                        .nickname(String.valueOf(map.get("name")))
-                        .mail(String.valueOf(map.get("mail")))
-                        .build());
+            Object codeObj = map.get("code");
+                
+            // 检查返回码是否为 200
+            if (codeObj != null && Objects.equals(String.valueOf(codeObj), "200")) {
+                // 获取 data 对象
+                Map<String, Object> data = (Map<String, Object>) map.get("data");
+                
+                if (data != null) {
+                    // 获取用户头像、昵称、邮箱
+                    String avatar = String.valueOf(data.get("avatar_apiurl_1"));
+                    String nickname = String.valueOf(data.get("name"));
+                    // 鬼鬼 API 未返回邮箱，根据 QQ 号拼接 QQ 邮箱
+                    String mail = qq + "@qq.com";
+                        
+                    log.info("QQ 用户信息解析成功 - avatar: {}, nickname: {}, mail: {}", avatar, nickname, mail);
+                        
+                    return Response.success(FindQQUserInfoRspVO.builder()
+                            .avatar(avatar)
+                            .nickname(nickname)
+                            .mail(mail)
+                            .build());
+                } else {
+                    log.warn("QQ 用户信息接口返回的 data 为空");
+                    return Response.fail(ResponseCodeEnum.SYSTEM_ERROR.getErrorCode(), "未查询到用户信息");
+                }
+            } else {
+                log.warn("QQ 用户信息接口返回异常 - code: {}, message: {}", codeObj, map.get("msg"));
+                return Response.fail(ResponseCodeEnum.SYSTEM_ERROR.getErrorCode(), "QQ 号不存在或接口异常");
             }
-
-            return Response.fail();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            log.error("解析 QQ 用户信息 JSON 失败，result: {}", result, e);
+            return Response.fail(ResponseCodeEnum.SYSTEM_ERROR.getErrorCode(), "解析用户信息失败");
         }
     }
 

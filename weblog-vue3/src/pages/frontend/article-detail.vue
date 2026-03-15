@@ -186,6 +186,8 @@
 
 
                 </div>
+                <!-- 评论组件 -->
+                <Comment></Comment>
             </div>
 
             <!-- 右边侧边栏，占用一列 -->
@@ -232,6 +234,7 @@ import 'highlight.js/styles/tokyo-night-dark.css'
 import { initTooltips } from 'flowbite'
 
 import { useDark } from '@vueuse/core'
+import Comment from '@/components/Comment.vue'
 
 // 是否是暗黑模式
 const isDark = useDark()

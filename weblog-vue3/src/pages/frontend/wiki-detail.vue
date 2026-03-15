@@ -220,6 +220,8 @@
                             </div>
                         </nav>
                     </article>
+                    <!-- 评论组件 -->
+                    <Comment></Comment>
                 </div>
             </div>
             <!-- 右边栏 -->
