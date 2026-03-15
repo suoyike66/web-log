@@ -6,8 +6,6 @@ import { useBlogSettingsStore } from '@/stores/blogsettings'
 
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
-  console.log('==> 全局路由前置守卫')
-
   // 展示页面加载 Loading
   showPageLoading()
 

@@ -74,7 +74,7 @@
                         </el-tooltip>
                         
                         <el-tooltip class="box-item" effect="dark" content="预览" placement="bottom">
-                            <el-button size="small" :icon="View" circle>
+                            <el-button size="small" @click="previewWiki(scope.row)" :icon="View" circle>
                             </el-button>
                         </el-tooltip>
                             
@@ -151,6 +151,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { Search, RefreshRight, Check, Close, Delete, Edit, Tickets, View } from '@element-plus/icons-vue'
 import moment from 'moment'
 import { getWikiPageList, addWiki, updateWikiIsTop, updateWikiIsPublish, deleteWiki, updateWiki } from '@/api/admin/wiki'
@@ -158,6 +159,8 @@ import FormDialog from '@/components/FormDialog.vue'
 import WikiCatalogEditDialog from '@/components/WikiCatalogEditDialog.vue'
 import { uploadFile } from '@/api/admin/file'
 import { showMessage, showModel } from '@/composables/util'
+
+const router = useRouter()
 
 // 模糊搜索的知识库标题
 const searchWikiTitle = ref('')
@@ -473,6 +476,32 @@ const editCatalogFormDialogRef = ref(null)
 const showEditWikiCatalogDialog = (row) => {
     // 显示编辑目录对话框, 并传入知识库 ID
     editCatalogFormDialogRef.value.open(row.id)
+}
+
+// 预览知识库
+const previewWiki = (row) => {
+    // 先获取知识库目录，找到第一篇文章
+    import('@/api/frontend/wiki').then(({ getWikiCatalogs }) => {
+        getWikiCatalogs(row.id).then(res => {
+            if (res.success && res.data && res.data.length > 0) {
+                // 遍历目录，找到第一篇文章
+                let firstArticleId = null
+                for (const catalog of res.data) {
+                    if (catalog.children && catalog.children.length > 0) {
+                        firstArticleId = catalog.children[0].articleId
+                        break
+                    }
+                }
+                if (firstArticleId) {
+                    router.push({ path: `/wiki/${row.id}`, query: { articleId: firstArticleId } })
+                } else {
+                    router.push({ path: `/wiki/${row.id}` })
+                }
+            } else {
+                router.push({ path: `/wiki/${row.id}` })
+            }
+        })
+    })
 }
 </script>
 
