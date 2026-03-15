@@ -2,6 +2,7 @@ package com.suoyike.weblog.web.service;
 
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoReqVO;
+import com.suoyike.weblog.web.model.vo.comment.PublishCommentReqVO;
 
 /**
  * @author: 蓑衣客
@@ -18,4 +19,10 @@ public interface CommentService {
      */
     Response findQQUserInfo(FindQQUserInfoReqVO findQQUserInfoReqVO);
 
+    /**
+     * 发布评论
+     * @param publishCommentReqVO
+     * @return
+     */
+    Response publishComment(PublishCommentReqVO publishCommentReqVO);
 }

@@ -2,11 +2,17 @@ package com.suoyike.weblog.web.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.suoyike.weblog.common.domain.dos.BlogSettingsDO;
+import com.suoyike.weblog.common.domain.dos.CommentDO;
+import com.suoyike.weblog.common.domain.mapper.BlogSettingsMapper;
+import com.suoyike.weblog.common.domain.mapper.CommentMapper;
+import com.suoyike.weblog.common.enums.CommentStatusEnum;
 import com.suoyike.weblog.common.enums.ResponseCodeEnum;
 import com.suoyike.weblog.common.exception.BizException;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoReqVO;
 import com.suoyike.weblog.web.model.vo.comment.FindQQUserInfoRspVO;
+import com.suoyike.weblog.web.model.vo.comment.PublishCommentReqVO;
 import com.suoyike.weblog.web.service.CommentService;
 import com.suoyike.weblog.web.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +23,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author: 犬小哈
- * @url: www.quanxiaoha.com
- * @date: 2023-09-15 14:03
- * @description: 知识库
+ * @author: 蓑衣客
+ * @url: www.suoyike.com
+ * @date: 2026-03-15 15:58
+ * @description: 评论服务实现类
  **/
 @Service
 @Slf4j
@@ -32,6 +39,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private BlogSettingsMapper blogSettingsMapper;
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Value("${api-key}")
     private String apiKey;
@@ -75,6 +86,66 @@ public class CommentServiceImpl implements CommentService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 发布评论
+     *
+     * @param publishCommentReqVO
+     * @return
+     */
+    @Override
+    public Response publishComment(PublishCommentReqVO publishCommentReqVO) {
+        // 回复的评论 ID
+        Long replyCommentId = publishCommentReqVO.getReplyCommentId();
+        // 评论内容
+        String content = publishCommentReqVO.getContent();
+        // 昵称
+        String nickname = publishCommentReqVO.getNickname();
+
+        // 查询博客设置相关信息（约定的 ID 为 1）
+        BlogSettingsDO blogSettingsDO = blogSettingsMapper.selectById(1L);
+        // 是否开启了敏感词过滤
+        boolean isCommentSensiWordOpen = blogSettingsDO.getIsCommentSensiWordOpen();
+        // 是否开启了审核
+        boolean isCommentExamineOpen = blogSettingsDO.getIsCommentExamineOpen();
+
+        // 设置默认状态（正常）
+        Integer status = CommentStatusEnum.NORMAL.getCode();
+        // 审核不通过原因
+        String reason = "";
+
+        // 如果开启了审核, 设置状态为待审核，等待博主后台审核通过
+        if (isCommentExamineOpen) {
+            status = CommentStatusEnum.WAIT_EXAMINE.getCode();
+        }
+
+        // 评论内容是否包含敏感词
+        boolean isContainSensitiveWord = false;
+        // 是否开启了敏感词过滤
+        if (isCommentSensiWordOpen) {
+            // todo 敏感词过滤，先空着
+        }
+
+        // 构建 DO 对象
+        CommentDO commentDO = CommentDO.builder()
+                .avatar(publishCommentReqVO.getAvatar())
+                .content(content)
+                .mail(publishCommentReqVO.getMail())
+                .createTime(LocalDateTime.now())
+                .nickname(nickname)
+                .routerUrl(publishCommentReqVO.getRouterUrl())
+                .website(publishCommentReqVO.getWebsite())
+                .replyCommentId(replyCommentId)
+                .parentCommentId(publishCommentReqVO.getParentCommentId())
+                .status(status)
+                .reason(reason)
+                .build();
+
+        // 新增评论
+        commentMapper.insert(commentDO);
+
+        return Response.success();
     }
 
 }
