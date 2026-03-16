@@ -1,5 +1,7 @@
 package com.suoyike.weblog.admin.service;
 
+import com.suoyike.weblog.admin.model.vo.comment.DeleteCommentReqVO;
+import com.suoyike.weblog.admin.model.vo.comment.ExamineCommentReqVO;
 import com.suoyike.weblog.admin.model.vo.comment.FindCommentPageListReqVO;
 import com.suoyike.weblog.common.utils.Response;
 
@@ -12,4 +14,17 @@ public interface AdminCommentService {
      */
     Response findCommentPageList(FindCommentPageListReqVO findCommentPageListReqVO);
 
+    /**
+     * 删除评论
+     * @param deleteCommentReqVO
+     * @return
+     */
+    Response deleteComment(DeleteCommentReqVO deleteCommentReqVO);
+
+    /**
+     * 评论审核
+     * @param examineCommentReqVO
+     * @return
+     */
+    Response examine(ExamineCommentReqVO examineCommentReqVO);
 }
