@@ -71,6 +71,11 @@ const menus = [
         'icon': 'Collection',
         'path': '/admin/wiki/list',
     },
+        {
+        'name': '评论管理',
+        'icon': 'ChatDotSquare',
+        'path': '/admin/comment/list',
+    },
     {
         'name': '博客设置',
         'icon': 'Setting',
