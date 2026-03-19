@@ -417,6 +417,11 @@ onMounted(() => {
 
         // 自动建立 WebSocket 连接
         connectWebSocket()
+    } else {
+        // 如果没有用户信息，显示昵称输入模态框
+        if (nicknameModal) {
+            nicknameModal.show()
+        }
     }
 })
 
@@ -526,6 +531,12 @@ const joinChatRoom = () => {
 
 // 建立 WebSocket 连接
 const connectWebSocket = () => {
+    // 检查用户信息是否完整
+    if (!userInfo.value.nickname) {
+        showMessage('请先输入昵称', 'warning')
+        return
+    }
+
     // 如果已存在连接，先关闭
     if (ws) {
         ws.close()
@@ -535,8 +546,12 @@ const connectWebSocket = () => {
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const wsHost = import.meta.env.VITE_APP_WS_HOST
     
-    // 构建 WebSocket URL，携带 nickname、avatar、qq 号参数
-    const wsUrl = `${wsProtocol}//${wsHost}/ws/chat?nickname=${encodeURIComponent(userInfo.value.nickname)}&avatar=${encodeURIComponent(userInfo.value.avatar)}&qq=${encodeURIComponent(userInfo.value.qq)}`
+    // 构建 WebSocket URL，携带 nickname、avatar、qq 号参数，确保参数不为null
+    const nickname = userInfo.value.nickname || ''
+    const avatar = userInfo.value.avatar || ''
+    const qq = userInfo.value.qq || ''
+    
+    const wsUrl = `${wsProtocol}//${wsHost}/ws/chat?nickname=${encodeURIComponent(nickname)}&avatar=${encodeURIComponent(avatar)}&qq=${encodeURIComponent(qq)}`
     // 创建 WebSocket 连接
     ws = new WebSocket(wsUrl)
 
