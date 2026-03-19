@@ -748,7 +748,7 @@ const loadMoreChatHistory = (lastId) => {
 const loadChatHistory = (sessionId = null) => {
     // 加载第一页数据
     getChatHistory(null, sessionId).then(res => {
-        if (res.success) {
+        if (res.success && res.data && res.data.messages) {
             chatMessages.value = res.data.messages
             // 滚动到最底部
             scrollToBottom()
