@@ -30,3 +30,4 @@ public class FindChatMessagePageListRspVO {
     private Boolean hasMore;
 
 }
+

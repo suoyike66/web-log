@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 /**
  * @Author: 蓑衣客
- * @Date: 2026-03-19 14:10
+ * @Date: 2026-03-19 15:07
  * @Version: v1.0.0
  * @Description: 聊天室消息
  **/
@@ -15,7 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebSocketChatMessageVO {
+public class ChatMessageVO {
+
+    /**
+     * 消息 ID
+     */
+    private Long id;
 
     /**
      * 消息类型
@@ -43,12 +47,7 @@ public class WebSocketChatMessageVO {
     private String time;
 
     /**
-     * 在线人数
+     * 是否是当前用户发送的消息
      */
-    private Integer onlineCount;
-
-    /**
-     * 返回会话 ID
-     */
-    private String sessionId;
+    private Boolean isSelf;
 }

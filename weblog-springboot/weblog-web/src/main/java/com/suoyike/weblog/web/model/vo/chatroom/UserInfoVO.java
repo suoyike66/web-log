@@ -26,4 +26,9 @@ public class UserInfoVO {
      * 头像
      */
     private String avatar;
+
+    /**
+     * QQ 号（可为空，仅用于 QQ 登录方式）
+     */
+    private String qq;
 }

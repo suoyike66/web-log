@@ -22,4 +22,12 @@ public class FindChatMessagePageListReqVO {
      */
     private Long lastId;
 
+    /**
+     * 用于后端判断消息是否是自己发送的
+     *
+     * 如果是 QQ 号方式加入，则提交的是 qq 号
+     * 如果是自定义昵称方式加入，则提交的是系统分配的 sessionId
+     */
+    private String sessionId;
+
 }

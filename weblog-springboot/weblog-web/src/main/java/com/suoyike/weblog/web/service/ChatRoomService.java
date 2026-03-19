@@ -3,6 +3,9 @@ package com.suoyike.weblog.web.service;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.chatroom.FindChatMessagePageListReqVO;
 import com.suoyike.weblog.web.model.vo.chatroom.FindChatMessagePageListRspVO;
+import com.suoyike.weblog.web.model.vo.chatroom.OnlineUserVO;
+
+import java.util.List;
 
 /**
  * @author: 蓑衣客
@@ -18,4 +21,10 @@ public interface ChatRoomService {
      * @return
      */
     Response<FindChatMessagePageListRspVO> findHistoryMessages(FindChatMessagePageListReqVO findChatMessagePageListReqVO);
+
+    /**
+     * 获取所有在线用户
+     * @return
+     */
+    Response<List<OnlineUserVO>> findOnlineUsers();
 }

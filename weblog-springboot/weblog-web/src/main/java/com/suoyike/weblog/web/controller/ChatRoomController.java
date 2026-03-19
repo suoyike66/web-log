@@ -4,6 +4,7 @@ import com.suoyike.weblog.common.aspect.ApiOperationLog;
 import com.suoyike.weblog.common.utils.Response;
 import com.suoyike.weblog.web.model.vo.chatroom.FindChatMessagePageListReqVO;
 import com.suoyike.weblog.web.model.vo.chatroom.FindChatMessagePageListRspVO;
+import com.suoyike.weblog.web.model.vo.chatroom.OnlineUserVO;
 import com.suoyike.weblog.web.service.ChatRoomService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author: 蓑衣客
@@ -33,6 +36,13 @@ public class ChatRoomController {
     @ApiOperationLog(description = "获取历史消息")
     public Response<FindChatMessagePageListRspVO> findHistoryMessages(@RequestBody @Validated FindChatMessagePageListReqVO findChatMessagePageListReqVO) {
         return chatRoomService.findHistoryMessages(findChatMessagePageListReqVO);
+    }
+
+    @PostMapping("/online/users")
+    @ApiOperation(value = "获取所有在线用户")
+    @ApiOperationLog(description = "获取所有在线用户")
+    public Response<List<OnlineUserVO>> findOnlineUsers() {
+        return chatRoomService.findOnlineUsers();
     }
 
 }
