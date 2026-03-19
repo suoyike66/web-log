@@ -3,19 +3,23 @@
 ## 优化内容
 
 ### 1. 安装依赖
+
 - 安装 `vite-plugin-compression` 插件用于 gzip 压缩
 
 ### 2. 配置代码分割和 tree-shaking
+
 - 在 `vite.config.js` 中添加 `build` 配置
 - 启用代码分割，按路由拆分代码
 - 配置合理的 chunk 大小
 
 ### 3. 启用 gzip 压缩
+
 - 配置 `vite-plugin-compression` 插件
 - 支持 gzip 和 brotli 压缩
 - 配置压缩阈值和文件类型
 
 ### 4. 优化构建速度和输出大小
+
 - 配置缓存策略
 - 优化 ES 构建目标
 - 配置 sourcemap 生成策略
@@ -23,6 +27,7 @@
 ## 具体修改
 
 ### 修改文件：`vite.config.js`
+
 1. 导入 `vite-plugin-compression` 插件
 2. 添加 `build` 配置项
 3. 配置代码分割策略
@@ -30,6 +35,7 @@
 5. 优化构建参数
 
 ### 修改文件：`package.json`
+
 1. 添加 `vite-plugin-compression` 到开发依赖
 
 ## 测试用例

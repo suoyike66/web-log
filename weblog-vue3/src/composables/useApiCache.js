@@ -27,7 +27,11 @@ export function generateCacheKey(url, params = {}) {
  * @param {any} data - 缓存数据
  * @param {number} expireTime - 过期时间（毫秒）
  */
-export function setCache(key, data, expireTime = cacheConfig.defaultExpireTime) {
+export function setCache(
+  key,
+  data,
+  expireTime = cacheConfig.defaultExpireTime
+) {
   // 检查缓存大小，如果超过最大限制，删除最早的缓存
   if (cacheStorage.size >= cacheConfig.maxCacheSize) {
     const firstKey = cacheStorage.keys().next().value;
@@ -114,7 +118,7 @@ export function createCachedAxios(axiosInstance) {
         return Promise.resolve(cachedData);
       }
 
-      return axiosInstance.get(url, config).then(response => {
+      return axiosInstance.get(url, config).then((response) => {
         setCache(cacheKey, response, expireTime);
         return response;
       });
@@ -135,7 +139,7 @@ export function createCachedAxios(axiosInstance) {
         return Promise.resolve(cachedData);
       }
 
-      return axiosInstance.post(url, data, config).then(response => {
+      return axiosInstance.post(url, data, config).then((response) => {
         setCache(cacheKey, response, expireTime);
         return response;
       });
@@ -156,7 +160,7 @@ export function createCachedAxios(axiosInstance) {
         return Promise.resolve(cachedData);
       }
 
-      return axiosInstance.put(url, data, config).then(response => {
+      return axiosInstance.put(url, data, config).then((response) => {
         setCache(cacheKey, response, expireTime);
         return response;
       });
@@ -177,7 +181,7 @@ export function createCachedAxios(axiosInstance) {
         return Promise.resolve(cachedData);
       }
 
-      return axiosInstance.delete(url, config).then(response => {
+      return axiosInstance.delete(url, config).then((response) => {
         setCache(cacheKey, response, expireTime);
         return response;
       });

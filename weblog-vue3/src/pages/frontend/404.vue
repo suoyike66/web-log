@@ -1,25 +1,280 @@
 <template>
-    <Header></Header>
+  <Header></Header>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4 flex items-center justify-center flex-col">
-      <svg height="400" node-id="1" sillyvg="true" template-height="1024" template-width="1024" version="1.1" viewBox="0 0 1024 1024" width="1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs node-id="36"><linearGradient gradientUnits="objectBoundingBox" id="paint0_linear_14934_14847" node-id="17" spreadMethod="pad" x1="71.2778" x2="71.2778" y1="176.906" y2="736.633"><stop offset="0" stop-color="#fdfeff"/><stop offset="1" stop-color="#ecf0f5"/></linearGradient><linearGradient gradientUnits="objectBoundingBox" id="paint1_linear_14934_14847" node-id="20" spreadMethod="pad" x1="476.74" x2="520.019" y1="387.193" y2="529.802"><stop offset="0" stop-color="#b0bacc"/><stop offset="1" stop-color="#969eae"/></linearGradient><linearGradient gradientUnits="objectBoundingBox" id="paint2_linear_14934_14847" node-id="23" spreadMethod="pad" x1="474.956" x2="515.964" y1="386.665" y2="530.192"><stop offset="0" stop-color="#b0bacc"/><stop offset="1" stop-color="#969eae"/></linearGradient><linearGradient gradientUnits="objectBoundingBox" id="paint3_linear_14934_14847" node-id="26" spreadMethod="pad" x1="476.742" x2="520.022" y1="387.193" y2="529.802"><stop offset="0" stop-color="#b0bacc"/><stop offset="1" stop-color="#969eae"/></linearGradient><linearGradient gradientUnits="objectBoundingBox" id="paint4_linear_14934_14847" node-id="29" spreadMethod="pad" x1="710.195" x2="941.304" y1="908.421" y2="908.421"><stop offset="0" stop-color="#b0bacc"/><stop offset="1" stop-color="#969eae"/></linearGradient><linearGradient gradientUnits="objectBoundingBox" id="paint5_linear_14934_14847" node-id="32" spreadMethod="pad" x1="145.543" x2="790.885" y1="764.464" y2="764.464"><stop offset="0" stop-color="#b0bacc"/><stop offset="1" stop-color="#969eae"/></linearGradient></defs><path d="M 865.87 224.73 L 865.87 697.57 C 865.87 717.28 850.11 732.81 830.80 732.81 L 118.65 732.81 C 99.34 732.81 83.34 717.02 83.34 697.57 L 83.34 224.73 C 83.34 205.36 99.09 189.49 118.65 189.49 L 830.80 189.49 C 850.11 189.49 865.87 205.36 865.87 224.73 Z" fill="url(#paint0_linear_14934_14847)" fill-rule="nonzero" node-id="75" stroke="none" target-height="543.3171" target-width="782.52423" target-x="83.3418" target-y="189.492"/><path d="M 865.87 224.73 L 865.87 277.64 L 83.34 277.64 L 83.34 224.73 C 83.34 205.36 99.09 189.49 118.65 189.49 L 830.80 189.49 C 850.11 189.49 865.87 205.36 865.87 224.73 Z" fill="#d5ddea" fill-rule="nonzero" node-id="77" stroke="none" target-height="88.14899" target-width="782.52423" target-x="83.3418" target-y="189.492"/><path d="M 132.63 246.75 C 139.93 246.75 145.84 240.78 145.84 233.44 C 145.84 226.10 139.93 220.21 132.63 220.21 C 125.34 220.21 119.42 226.10 119.42 233.44 C 119.42 240.78 125.34 246.75 132.63 246.75 Z" fill="#989fb0" fill-rule="nonzero" node-id="79" stroke="none" target-height="26.539001" target-width="26.418991" target-x="119.425" target-y="220.212"/><path d="M 175.82 246.75 C 183.11 246.75 189.03 240.78 189.03 233.44 C 189.03 226.10 183.11 220.21 175.82 220.21 C 168.52 220.21 162.61 226.10 162.61 233.44 C 162.61 240.78 168.52 246.75 175.82 246.75 Z" fill="#989fb0" fill-rule="nonzero" node-id="81" stroke="none" target-height="26.539001" target-width="26.419998" target-x="162.608" target-y="220.212"/><path d="M 218.76 246.75 C 226.05 246.75 231.97 240.78 231.97 233.44 C 231.97 226.10 226.05 220.21 218.76 220.21 C 211.46 220.21 205.55 226.10 205.55 233.44 C 205.55 240.78 211.46 246.75 218.76 246.75 Z" fill="#989fb0" fill-rule="nonzero" node-id="83" stroke="none" target-height="26.539001" target-width="26.418991" target-x="205.55" target-y="220.212"/><path d="M 246.71 599.69 L 702.51 599.69" fill="none" node-id="85" stroke="#d5ddea" stroke-linecap="butt" stroke-width="17.0667" target-height="0" target-width="455.8" target-x="246.708" target-y="599.69"/><path d="M 318.61 648.50 L 630.60 648.50" fill="none" node-id="87" stroke="#d5ddea" stroke-linecap="butt" stroke-width="17.0667" target-height="0" target-width="311.996" target-x="318.608" target-y="648.5"/><path d="M 382.63 462.48 L 398.39 462.48 L 398.39 488.50 L 382.38 488.50 L 382.38 513.85 L 352.40 513.85 L 352.40 488.50 L 286.34 488.50 L 286.34 458.38 L 347.57 372.70 L 382.63 372.70 L 382.63 462.48 Z M 314.29 462.22 L 352.40 462.22 L 352.40 407.78 L 314.29 462.22 Z" fill="url(#paint1_linear_14934_14847)" fill-rule="nonzero" node-id="89" stroke="none" target-height="141.142" target-width="112.04303" target-x="286.342" target-y="372.704"/><path d="M 473.60 369.46 C 505.86 369.46 533.81 397.53 533.81 443.02 C 533.81 488.50 505.86 516.66 473.60 516.66 C 441.58 516.66 413.38 488.50 413.38 443.02 C 413.38 397.53 441.32 369.46 473.60 369.46 Z M 473.60 397.02 C 458.60 397.02 443.61 412.13 443.61 443.27 C 443.61 474.42 458.60 489.52 473.60 489.52 C 488.58 489.52 503.57 474.42 503.57 443.27 C 503.57 412.13 488.58 397.02 473.60 397.02 Z" fill="url(#paint2_linear_14934_14847)" fill-rule="nonzero" node-id="91" stroke="none" target-height="147.20102" target-width="120.43103" target-x="413.375" target-y="369.46"/><path d="M 647.37 462.48 L 663.13 462.48 L 663.13 488.50 L 647.12 488.50 L 647.12 513.85 L 617.14 513.85 L 617.14 488.50 L 551.08 488.50 L 551.08 458.38 L 612.31 372.70 L 647.37 372.70 L 647.37 462.48 Z M 578.77 462.22 L 616.88 462.22 L 616.88 407.78 L 578.77 462.22 Z" fill="url(#paint3_linear_14934_14847)" fill-rule="nonzero" node-id="93" stroke="none" target-height="141.142" target-width="112.04297" target-x="551.083" target-y="372.704"/><path d="M 831.26 837.26 L 661.05 667.19 L 700.07 628.11 L 870.15 798.35 L 831.26 837.26 Z" fill="#858b9b" fill-rule="nonzero" node-id="95" stroke="none" target-height="209.15204" target-width="209.10095" target-x="661.05" target-y="628.106"/><path d="M 890.44 897.08 L 759.92 766.52 C 749.03 755.68 749.03 737.93 759.92 727.01 C 770.82 716.08 788.59 716.08 799.48 727.01 L 930.00 857.48 C 940.90 868.40 940.90 886.15 930.00 897.08 C 919.10 908.00 901.34 908.00 890.44 897.08 Z" fill="#858b9b" fill-rule="nonzero" node-id="97" stroke="none" target-height="191.91492" target-width="191.87195" target-x="749.026" target-y="716.08405"/><path d="M 881.15 905.44 L 713.23 737.50 C 709.33 733.58 709.33 727.26 713.23 723.25 L 756.15 680.33 C 760.06 676.40 766.38 676.40 770.41 680.33 L 938.34 848.27 C 942.24 852.11 942.24 858.42 938.34 862.52 L 895.42 905.44 C 891.37 909.28 885.05 909.28 881.15 905.44 Z" fill="url(#paint4_linear_14934_14847)" fill-rule="nonzero" node-id="99" stroke="none" target-height="232.875" target-width="232.91699" target-x="709.3251" target-y="676.404"/><path d="M 468.37 119.09 C 646.39 119.09 790.76 263.48 790.77 441.65 C 790.77 619.74 646.39 764.13 468.24 764.13 C 290.22 764.13 145.84 619.66 145.84 441.65 C 145.84 263.48 290.22 119.09 468.37 119.09 Z M 468.37 178.74 C 325.34 178.74 209.48 296.33 209.48 441.48 C 209.48 586.72 325.34 704.39 468.37 704.39 C 611.27 704.39 727.25 586.80 727.25 441.65 C 727.25 296.41 611.40 178.74 468.37 178.74 Z" fill="url(#paint5_linear_14934_14847)" fill-rule="nonzero" node-id="101" stroke="none" target-height="645.03503" target-width="644.924" target-x="145.842" target-y="119.091995"/></svg>
-       <p class="mt-2 mb-10 text-gray-400">您要找的页面飞到月球去啦~</p>
-        <p class="mb-16">
-            <button @click="router.push('/')" type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">返回首页</button>
-        </p>
-    </main>
+  <!-- 主内容区域 -->
+  <main
+    class="container max-w-screen-xl mx-auto p-4 flex items-center justify-center flex-col"
+  >
+    <svg
+      height="400"
+      node-id="1"
+      sillyvg="true"
+      template-height="1024"
+      template-width="1024"
+      version="1.1"
+      viewBox="0 0 1024 1024"
+      width="1024"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+      <defs node-id="36">
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint0_linear_14934_14847"
+          node-id="17"
+          spreadMethod="pad"
+          x1="71.2778"
+          x2="71.2778"
+          y1="176.906"
+          y2="736.633"
+        >
+          <stop offset="0" stop-color="#fdfeff" />
+          <stop offset="1" stop-color="#ecf0f5" />
+        </linearGradient>
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint1_linear_14934_14847"
+          node-id="20"
+          spreadMethod="pad"
+          x1="476.74"
+          x2="520.019"
+          y1="387.193"
+          y2="529.802"
+        >
+          <stop offset="0" stop-color="#b0bacc" />
+          <stop offset="1" stop-color="#969eae" />
+        </linearGradient>
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint2_linear_14934_14847"
+          node-id="23"
+          spreadMethod="pad"
+          x1="474.956"
+          x2="515.964"
+          y1="386.665"
+          y2="530.192"
+        >
+          <stop offset="0" stop-color="#b0bacc" />
+          <stop offset="1" stop-color="#969eae" />
+        </linearGradient>
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint3_linear_14934_14847"
+          node-id="26"
+          spreadMethod="pad"
+          x1="476.742"
+          x2="520.022"
+          y1="387.193"
+          y2="529.802"
+        >
+          <stop offset="0" stop-color="#b0bacc" />
+          <stop offset="1" stop-color="#969eae" />
+        </linearGradient>
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint4_linear_14934_14847"
+          node-id="29"
+          spreadMethod="pad"
+          x1="710.195"
+          x2="941.304"
+          y1="908.421"
+          y2="908.421"
+        >
+          <stop offset="0" stop-color="#b0bacc" />
+          <stop offset="1" stop-color="#969eae" />
+        </linearGradient>
+        <linearGradient
+          gradientUnits="objectBoundingBox"
+          id="paint5_linear_14934_14847"
+          node-id="32"
+          spreadMethod="pad"
+          x1="145.543"
+          x2="790.885"
+          y1="764.464"
+          y2="764.464"
+        >
+          <stop offset="0" stop-color="#b0bacc" />
+          <stop offset="1" stop-color="#969eae" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M 865.87 224.73 L 865.87 697.57 C 865.87 717.28 850.11 732.81 830.80 732.81 L 118.65 732.81 C 99.34 732.81 83.34 717.02 83.34 697.57 L 83.34 224.73 C 83.34 205.36 99.09 189.49 118.65 189.49 L 830.80 189.49 C 850.11 189.49 865.87 205.36 865.87 224.73 Z"
+        fill="url(#paint0_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="75"
+        stroke="none"
+        target-height="543.3171"
+        target-width="782.52423"
+        target-x="83.3418"
+        target-y="189.492"
+      />
+      <path
+        d="M 865.87 224.73 L 865.87 277.64 L 83.34 277.64 L 83.34 224.73 C 83.34 205.36 99.09 189.49 118.65 189.49 L 830.80 189.49 C 850.11 189.49 865.87 205.36 865.87 224.73 Z"
+        fill="#d5ddea"
+        fill-rule="nonzero"
+        node-id="77"
+        stroke="none"
+        target-height="88.14899"
+        target-width="782.52423"
+        target-x="83.3418"
+        target-y="189.492"
+      />
+      <path
+        d="M 132.63 246.75 C 139.93 246.75 145.84 240.78 145.84 233.44 C 145.84 226.10 139.93 220.21 132.63 220.21 C 125.34 220.21 119.42 226.10 119.42 233.44 C 119.42 240.78 125.34 246.75 132.63 246.75 Z"
+        fill="#989fb0"
+        fill-rule="nonzero"
+        node-id="79"
+        stroke="none"
+        target-height="26.539001"
+        target-width="26.418991"
+        target-x="119.425"
+        target-y="220.212"
+      />
+      <path
+        d="M 175.82 246.75 C 183.11 246.75 189.03 240.78 189.03 233.44 C 189.03 226.10 183.11 220.21 175.82 220.21 C 168.52 220.21 162.61 226.10 162.61 233.44 C 162.61 240.78 168.52 246.75 175.82 246.75 Z"
+        fill="#989fb0"
+        fill-rule="nonzero"
+        node-id="81"
+        stroke="none"
+        target-height="26.539001"
+        target-width="26.419998"
+        target-x="162.608"
+        target-y="220.212"
+      />
+      <path
+        d="M 218.76 246.75 C 226.05 246.75 231.97 240.78 231.97 233.44 C 231.97 226.10 226.05 220.21 218.76 220.21 C 211.46 220.21 205.55 226.10 205.55 233.44 C 205.55 240.78 211.46 246.75 218.76 246.75 Z"
+        fill="#989fb0"
+        fill-rule="nonzero"
+        node-id="83"
+        stroke="none"
+        target-height="26.539001"
+        target-width="26.418991"
+        target-x="205.55"
+        target-y="220.212"
+      />
+      <path
+        d="M 246.71 599.69 L 702.51 599.69"
+        fill="none"
+        node-id="85"
+        stroke="#d5ddea"
+        stroke-linecap="butt"
+        stroke-width="17.0667"
+        target-height="0"
+        target-width="455.8"
+        target-x="246.708"
+        target-y="599.69"
+      />
+      <path
+        d="M 318.61 648.50 L 630.60 648.50"
+        fill="none"
+        node-id="87"
+        stroke="#d5ddea"
+        stroke-linecap="butt"
+        stroke-width="17.0667"
+        target-height="0"
+        target-width="311.996"
+        target-x="318.608"
+        target-y="648.5"
+      />
+      <path
+        d="M 382.63 462.48 L 398.39 462.48 L 398.39 488.50 L 382.38 488.50 L 382.38 513.85 L 352.40 513.85 L 352.40 488.50 L 286.34 488.50 L 286.34 458.38 L 347.57 372.70 L 382.63 372.70 L 382.63 462.48 Z M 314.29 462.22 L 352.40 462.22 L 352.40 407.78 L 314.29 462.22 Z"
+        fill="url(#paint1_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="89"
+        stroke="none"
+        target-height="141.142"
+        target-width="112.04303"
+        target-x="286.342"
+        target-y="372.704"
+      />
+      <path
+        d="M 473.60 369.46 C 505.86 369.46 533.81 397.53 533.81 443.02 C 533.81 488.50 505.86 516.66 473.60 516.66 C 441.58 516.66 413.38 488.50 413.38 443.02 C 413.38 397.53 441.32 369.46 473.60 369.46 Z M 473.60 397.02 C 458.60 397.02 443.61 412.13 443.61 443.27 C 443.61 474.42 458.60 489.52 473.60 489.52 C 488.58 489.52 503.57 474.42 503.57 443.27 C 503.57 412.13 488.58 397.02 473.60 397.02 Z"
+        fill="url(#paint2_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="91"
+        stroke="none"
+        target-height="147.20102"
+        target-width="120.43103"
+        target-x="413.375"
+        target-y="369.46"
+      />
+      <path
+        d="M 647.37 462.48 L 663.13 462.48 L 663.13 488.50 L 647.12 488.50 L 647.12 513.85 L 617.14 513.85 L 617.14 488.50 L 551.08 488.50 L 551.08 458.38 L 612.31 372.70 L 647.37 372.70 L 647.37 462.48 Z M 578.77 462.22 L 616.88 462.22 L 616.88 407.78 L 578.77 462.22 Z"
+        fill="url(#paint3_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="93"
+        stroke="none"
+        target-height="141.142"
+        target-width="112.04297"
+        target-x="551.083"
+        target-y="372.704"
+      />
+      <path
+        d="M 831.26 837.26 L 661.05 667.19 L 700.07 628.11 L 870.15 798.35 L 831.26 837.26 Z"
+        fill="#858b9b"
+        fill-rule="nonzero"
+        node-id="95"
+        stroke="none"
+        target-height="209.15204"
+        target-width="209.10095"
+        target-x="661.05"
+        target-y="628.106"
+      />
+      <path
+        d="M 890.44 897.08 L 759.92 766.52 C 749.03 755.68 749.03 737.93 759.92 727.01 C 770.82 716.08 788.59 716.08 799.48 727.01 L 930.00 857.48 C 940.90 868.40 940.90 886.15 930.00 897.08 C 919.10 908.00 901.34 908.00 890.44 897.08 Z"
+        fill="#858b9b"
+        fill-rule="nonzero"
+        node-id="97"
+        stroke="none"
+        target-height="191.91492"
+        target-width="191.87195"
+        target-x="749.026"
+        target-y="716.08405"
+      />
+      <path
+        d="M 881.15 905.44 L 713.23 737.50 C 709.33 733.58 709.33 727.26 713.23 723.25 L 756.15 680.33 C 760.06 676.40 766.38 676.40 770.41 680.33 L 938.34 848.27 C 942.24 852.11 942.24 858.42 938.34 862.52 L 895.42 905.44 C 891.37 909.28 885.05 909.28 881.15 905.44 Z"
+        fill="url(#paint4_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="99"
+        stroke="none"
+        target-height="232.875"
+        target-width="232.91699"
+        target-x="709.3251"
+        target-y="676.404"
+      />
+      <path
+        d="M 468.37 119.09 C 646.39 119.09 790.76 263.48 790.77 441.65 C 790.77 619.74 646.39 764.13 468.24 764.13 C 290.22 764.13 145.84 619.66 145.84 441.65 C 145.84 263.48 290.22 119.09 468.37 119.09 Z M 468.37 178.74 C 325.34 178.74 209.48 296.33 209.48 441.48 C 209.48 586.72 325.34 704.39 468.37 704.39 C 611.27 704.39 727.25 586.80 727.25 441.65 C 727.25 296.41 611.40 178.74 468.37 178.74 Z"
+        fill="url(#paint5_linear_14934_14847)"
+        fill-rule="nonzero"
+        node-id="101"
+        stroke="none"
+        target-height="645.03503"
+        target-width="644.924"
+        target-x="145.842"
+        target-y="119.091995"
+      />
+    </svg>
+    <p class="mt-2 mb-10 text-gray-400">您要找的页面飞到月球去啦~</p>
+    <p class="mb-16">
+      <button
+        @click="router.push('/')"
+        type="button"
+        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+      >
+        返回首页
+      </button>
+    </p>
+  </main>
 
-    <Footer></Footer>
-    <ScrollToTopButton />
+  <Footer></Footer>
+  <ScrollToTopButton />
 </template>
 
 <script setup>
-import Header from '@/layouts/frontend/components/Header.vue'
-import Footer from '@/layouts/frontend/components/Footer.vue'
-import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { useRouter } from 'vue-router'
+import Header from '@/layouts/frontend/components/Header.vue';
+import Footer from '@/layouts/frontend/components/Footer.vue';
+import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue';
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 </script>
-

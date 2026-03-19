@@ -1,5 +1,5 @@
-import { ref, reactive } from 'vue'
-import { showMessage } from './util'
+import { ref, reactive } from 'vue';
+import { showMessage } from './util';
 
 /**
  * 表单通用逻辑
@@ -9,82 +9,82 @@ import { showMessage } from './util'
  */
 export function useForm(initialForm = {}, rules = {}, submitFn) {
   // 表单引用
-  const formRef = ref(null)
+  const formRef = ref(null);
   // 表单数据
-  const form = reactive({ ...initialForm })
+  const form = reactive({ ...initialForm });
   // 提交按钮加载状态
-  const submitLoading = ref(false)
+  const submitLoading = ref(false);
   // 表单验证规则
-  const formRules = ref(rules)
-  
+  const formRules = ref(rules);
+
   /**
    * 重置表单
    */
   const resetForm = () => {
     if (formRef.value) {
-      formRef.value.resetFields()
+      formRef.value.resetFields();
     }
     // 重置表单数据
-    Object.keys(initialForm).forEach(key => {
-      form[key] = initialForm[key]
-    })
-  }
-  
+    Object.keys(initialForm).forEach((key) => {
+      form[key] = initialForm[key];
+    });
+  };
+
   /**
    * 提交表单
    * @param {Function} customSubmitFn - 自定义提交函数
    */
   const submitForm = async (customSubmitFn = submitFn) => {
     if (!formRef.value) {
-      showMessage('表单引用未定义', 'error')
-      return false
+      showMessage('表单引用未定义', 'error');
+      return false;
     }
-    
+
     return new Promise((resolve, reject) => {
       formRef.value.validate(async (valid) => {
         if (!valid) {
-          reject(new Error('表单验证失败'))
-          return false
+          reject(new Error('表单验证失败'));
+          return false;
         }
-        
-        submitLoading.value = true
-        
+
+        submitLoading.value = true;
+
         try {
-          const result = await customSubmitFn(form)
-          submitLoading.value = false
-          resolve(result)
+          const result = await customSubmitFn(form);
+          submitLoading.value = false;
+          resolve(result);
         } catch (error) {
-          submitLoading.value = false
-          showMessage('提交失败', 'error')
-          reject(error)
+          submitLoading.value = false;
+          showMessage('提交失败', 'error');
+          reject(error);
         }
-      })
-    })
-  }
-  
+      });
+    });
+  };
+
   /**
    * 验证表单
    */
   const validateForm = () => {
     if (!formRef.value) {
-      return Promise.resolve(false)
+      return Promise.resolve(false);
     }
-    
+
     return new Promise((resolve) => {
       formRef.value.validate((valid) => {
-        resolve(valid)
-      })
-    })
-  }
-  
+        resolve(valid);
+      });
+    });
+  };
+
   /**
    * 更新表单数据
    * @param {Object} data - 要更新的表单数据
    */
   const updateFormData = (data) => {
-    Object.assign(form, data)
-  }
-  
+    Object.assign(form, data);
+  };
+
   return {
     formRef,
     form,
@@ -93,6 +93,6 @@ export function useForm(initialForm = {}, rules = {}, submitFn) {
     resetForm,
     submitForm,
     validateForm,
-    updateFormData
-  }
+    updateFormData,
+  };
 }

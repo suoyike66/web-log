@@ -1,64 +1,63 @@
-import '@/assets/main.css'
+import '@/assets/main.css';
 // 引入交互样式优化
-import '@/assets/interaction.css'
+import '@/assets/interaction.css';
 // 引入 animate.css 动画库
 import 'animate.css';
 // 引入进度条样式
-import 'nprogress/nprogress.css'
+import 'nprogress/nprogress.css';
 // 引入 Element Plus 样式
-import 'element-plus/dist/index.css'
+import 'element-plus/dist/index.css';
 // 引入 highlight.js 样式
-import 'highlight.js/styles/github.css'
+import 'highlight.js/styles/github.css';
 // 引入 highlight.js 核心功能
-import hljs from 'highlight.js/lib/core'
+import hljs from 'highlight.js/lib/core';
 // 按需加载常用语言包
-import javascript from 'highlight.js/lib/languages/javascript'
-import xml from 'highlight.js/lib/languages/xml'
-import css from 'highlight.js/lib/languages/css'
-import python from 'highlight.js/lib/languages/python'
-import typescript from 'highlight.js/lib/languages/typescript'
+import javascript from 'highlight.js/lib/languages/javascript';
+import xml from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import python from 'highlight.js/lib/languages/python';
+import typescript from 'highlight.js/lib/languages/typescript';
 
 // 注册语言
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('html', xml)
-hljs.registerLanguage('css', css)
-hljs.registerLanguage('python', python)
-hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('html', xml);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('typescript', typescript);
 
-
-import { createApp } from 'vue'
-import App from '@/App.vue'
+import { createApp } from 'vue';
+import App from '@/App.vue';
 // 导入路由
-import router from '@/router'
+import router from '@/router';
 // 导入全局路由守卫
-import '@/permission'
+import '@/permission';
 // 导入 Element Plus
-import ElementPlus from 'element-plus'
+import ElementPlus from 'element-plus';
 // 导入 Element Plus 图标
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 // 引入全局状态管理 Pinia
-import pinia from '@/stores'
+import pinia from '@/stores';
 // 图片点击放大
-import 'viewerjs/dist/viewer.css'
-import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css';
+import VueViewer from 'v-viewer';
 // 导入 element-plus 暗黑 css
-import 'element-plus/theme-chalk/dark/css-vars.css'
+import 'element-plus/theme-chalk/dark/css-vars.css';
 
-const app = createApp(App)
-app.use(router)
+const app = createApp(App);
+app.use(router);
 // 应用 Pinia
-app.use(pinia)
+app.use(pinia);
 // 应用 Element Plus
-app.use(ElementPlus)
+app.use(ElementPlus);
 // 引入图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
+  app.component(key, component);
 }
 // 应用图片点击放大
-app.use(VueViewer)
+app.use(VueViewer);
 
 // 全局注册 highlight.js 方法
-app.config.globalProperties.$hljs = hljs
+app.config.globalProperties.$hljs = hljs;
 // 挂载到 window 对象，方便在组件中直接使用
-window.hljs = hljs
-app.mount('#app')
+window.hljs = hljs;
+app.mount('#app');

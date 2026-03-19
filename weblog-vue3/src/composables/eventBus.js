@@ -15,14 +15,14 @@ class EventBus {
   // 触发事件
   emit(event, data) {
     if (this.events[event]) {
-      this.events[event].forEach(callback => callback(data));
+      this.events[event].forEach((callback) => callback(data));
     }
   }
 
   // 取消订阅
   off(event, callback) {
     if (this.events[event]) {
-      this.events[event] = this.events[event].filter(cb => cb !== callback);
+      this.events[event] = this.events[event].filter((cb) => cb !== callback);
     }
   }
 }

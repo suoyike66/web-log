@@ -1,5 +1,5 @@
-import { ref, reactive } from 'vue'
-import { showMessage } from './util'
+import { ref, reactive } from 'vue';
+import { showMessage } from './util';
 
 /**
  * 表格通用逻辑
@@ -8,92 +8,92 @@ import { showMessage } from './util'
  */
 export function useTable(fetchData, initialParams = {}) {
   // 表格加载状态
-  const tableLoading = ref(false)
+  const tableLoading = ref(false);
   // 表格数据
-  const tableData = ref([])
+  const tableData = ref([]);
   // 当前页码
-  const current = ref(1)
+  const current = ref(1);
   // 总数据量
-  const total = ref(0)
+  const total = ref(0);
   // 每页显示的数据量
-  const size = ref(10)
+  const size = ref(10);
   // 查询参数
-  const queryParams = reactive({ ...initialParams })
-  
+  const queryParams = reactive({ ...initialParams });
+
   /**
    * 获取表格数据
    */
   const getTableData = async () => {
-    tableLoading.value = true
+    tableLoading.value = true;
     try {
       const response = await fetchData({
         current: current.value,
         size: size.value,
-        ...queryParams
-      })
-      
+        ...queryParams,
+      });
+
       if (response.success) {
-        tableData.value = response.data
-        current.value = response.current
-        size.value = response.size
-        total.value = response.total
+        tableData.value = response.data;
+        current.value = response.current;
+        size.value = response.size;
+        total.value = response.total;
       } else {
-        showMessage(response.message || '获取数据失败', 'error')
+        showMessage(response.message || '获取数据失败', 'error');
       }
     } catch (error) {
-      showMessage('获取数据失败', 'error')
+      showMessage('获取数据失败', 'error');
     } finally {
-      tableLoading.value = false
+      tableLoading.value = false;
     }
-  }
-  
+  };
+
   /**
    * 处理分页大小变更
    * @param {number} pageSize - 选择的每页显示数量
    */
   const handleSizeChange = (pageSize) => {
-    size.value = pageSize
-    getTableData()
-  }
-  
+    size.value = pageSize;
+    getTableData();
+  };
+
   /**
    * 处理页码变更
    * @param {number} page - 选择的页码
    */
   const handleCurrentChange = (page) => {
-    current.value = page
-    getTableData()
-  }
-  
+    current.value = page;
+    getTableData();
+  };
+
   /**
    * 重置查询参数
    * @param {Object} defaultParams - 默认参数
    */
   const resetParams = (defaultParams = {}) => {
-    Object.keys(queryParams).forEach(key => {
+    Object.keys(queryParams).forEach((key) => {
       if (defaultParams[key] !== undefined) {
-        queryParams[key] = defaultParams[key]
+        queryParams[key] = defaultParams[key];
       } else {
-        queryParams[key] = ''
+        queryParams[key] = '';
       }
-    })
-    current.value = 1
-    getTableData()
-  }
-  
+    });
+    current.value = 1;
+    getTableData();
+  };
+
   /**
    * 更新查询参数
    * @param {Object} params - 要更新的参数
    */
   const updateParams = (params) => {
-    Object.assign(queryParams, params)
-    current.value = 1
-    getTableData()
-  }
-  
+    Object.assign(queryParams, params);
+    current.value = 1;
+    getTableData();
+  };
+
   // 初始加载数据
-  getTableData()
-  
+  getTableData();
+
   return {
     tableLoading,
     tableData,
@@ -105,6 +105,6 @@ export function useTable(fetchData, initialParams = {}) {
     handleSizeChange,
     handleCurrentChange,
     resetParams,
-    updateParams
-  }
+    updateParams,
+  };
 }

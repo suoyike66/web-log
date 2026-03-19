@@ -1,7 +1,12 @@
 <template>
   <div class="skeleton-wrapper">
     <!-- 卡片类型骨架屏 -->
-    <div v-if="type === 'card'" class="skeleton-card" v-for="i in count" :key="'card-' + i">
+    <div
+      v-if="type === 'card'"
+      class="skeleton-card"
+      v-for="i in count"
+      :key="'card-' + i"
+    >
       <div class="skeleton-image"></div>
       <div class="skeleton-content">
         <div class="skeleton-title"></div>
@@ -11,7 +16,12 @@
     </div>
 
     <!-- 列表类型骨架屏 -->
-    <div v-else-if="type === 'list'" class="skeleton-list" v-for="i in count" :key="'list-' + i">
+    <div
+      v-else-if="type === 'list'"
+      class="skeleton-list"
+      v-for="i in count"
+      :key="'list-' + i"
+    >
       <div class="skeleton-list-item">
         <div class="skeleton-list-avatar"></div>
         <div class="skeleton-list-content">
@@ -35,10 +45,22 @@
     <!-- 表格类型骨架屏 -->
     <div v-else-if="type === 'table'" class="skeleton-table">
       <div class="skeleton-table-header">
-        <div class="skeleton-table-cell" v-for="i in 4" :key="'table-header-' + i"></div>
+        <div
+          class="skeleton-table-cell"
+          v-for="i in 4"
+          :key="'table-header-' + i"
+        ></div>
       </div>
-      <div class="skeleton-table-row" v-for="i in count" :key="'table-row-' + i">
-        <div class="skeleton-table-cell" v-for="j in 4" :key="'table-cell-' + i + '-' + j"></div>
+      <div
+        class="skeleton-table-row"
+        v-for="i in count"
+        :key="'table-row-' + i"
+      >
+        <div
+          class="skeleton-table-cell"
+          v-for="j in 4"
+          :key="'table-cell-' + i + '-' + j"
+        ></div>
       </div>
     </div>
 
@@ -48,32 +70,37 @@
     </div>
 
     <!-- 默认骨架屏 -->
-    <div v-else class="skeleton-default" v-for="i in count" :key="'default-' + i">
+    <div
+      v-else
+      class="skeleton-default"
+      v-for="i in count"
+      :key="'default-' + i"
+    >
       <div class="skeleton-block"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps } from 'vue';
 
 const props = defineProps({
   // 骨架屏类型：card, list, article, table, custom, default
   type: {
     type: String,
-    default: 'default'
+    default: 'default',
   },
   // 骨架屏数量
   count: {
     type: Number,
-    default: 3
+    default: 3,
   },
   // 是否显示动画
   animated: {
     type: Boolean,
-    default: true
-  }
-})
+    default: true,
+  },
+});
 </script>
 
 <style scoped>
