@@ -51,4 +51,9 @@ public class ChatMessageVO {
      * 在线人数
      */
     private Integer onlineCount;
+
+    /**
+     * 返回会话 ID
+     */
+    private String sessionId;
 }
