@@ -1,12 +1,27 @@
 package com.suoyike.weblog.web.websocket;
 
+import com.suoyike.weblog.common.domain.dos.ChatMessageDO;
+import com.suoyike.weblog.common.domain.mapper.ChatMessageMapper;
+import com.suoyike.weblog.common.utils.JsonUtil;
+import com.suoyike.weblog.web.enums.ChatRoomMessageTypeEnum;
+import com.suoyike.weblog.web.model.vo.chatroom.ChatMessageVO;
+import com.suoyike.weblog.web.model.vo.chatroom.OnlineUserVO;
+import com.suoyike.weblog.web.model.vo.chatroom.OnlineUsersMessageVO;
+import com.suoyike.weblog.web.model.vo.chatroom.UserInfoVO;
+import com.suoyike.weblog.web.utils.SpringContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,9 +42,19 @@ public class ChatWebSocketServer {
     private static final Map<String, Session> SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
+     * 存储用户信息
+     */
+    private static final Map<String, UserInfoVO> USER_INFO_MAP = new ConcurrentHashMap<>();
+
+    /**
      * 在线人数
      */
     private static final AtomicInteger ONLINE_COUNT = new AtomicInteger(0);
+
+    /**
+     * 时间格式化
+     */
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**
      * 连接建立成功调用的方法
@@ -41,14 +66,23 @@ public class ChatWebSocketServer {
         // 保存会话，使用会话 ID 作为 Key
         SESSION_MAP.put(sessionId, session);
 
+        // 获取昵称、头像
+        Map<String, List<String>> params = session.getRequestParameterMap();
+        String nickname = getFieldValueFromParam("nickname", params);
+        String avatar = getFieldValueFromParam("avatar", params);
+
+        // 保存用户信息
+        USER_INFO_MAP.put(sessionId, new UserInfoVO(nickname, avatar));
 
         // 在线人数+1
         int count = ONLINE_COUNT.incrementAndGet();
 
-        log.info("## 用户 [sessionId:{}] 加入聊天室，当前在线人数: {}", sessionId, count);
+        log.info("## 用户 [sessionId:{}] [昵称:{}] 加入聊天室，当前在线人数: {}", sessionId, nickname, count);
 
-        // 告诉客户端：你已经连接成功
-        sendMessage(session, "连接成功！欢迎加入蓑衣客公共聊天室，当前在线人数：" + count);
+        // 广播系统消息，告诉所有人，有用户加入了聊天室
+        broadcastMessage(buildMessage(ChatRoomMessageTypeEnum.SYSTEM.getCode(), nickname, null, "加入了聊天室"));
+        // 广播在线用户列表
+        broadcastOnlineUsers();
     }
 
     /**
@@ -56,10 +90,27 @@ public class ChatWebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        log.info("## 收到用户 [sessionId:{}] 的消息: {}", session.getId(), message);
+        // 获取会话 ID
+        String sessionId = session.getId();
+        // 获取对应用户信息
+        UserInfoVO userInfoVO = USER_INFO_MAP.get(sessionId);
 
-        // 发送广播，将此条消息告诉所有在线用户
-        broadcastMessage(message);
+        // 校验用户信息是否存在
+        if (Objects.isNull(userInfoVO)) {
+            log.warn("## 用户信息不存在，[sessionId:{}]", sessionId);
+            return;
+        }
+
+        String nickname = userInfoVO.getNickname();
+        String avatar = userInfoVO.getAvatar();
+
+        log.info("## 收到用户 [sessionId:{}] [昵称:{}] 的消息: {}", sessionId, nickname, message);
+
+        // 保存消息到数据库
+        saveMessage(nickname, avatar, message);
+
+        // 广播聊天消息，通知所有在线用户
+        broadcastMessage(buildMessage(ChatRoomMessageTypeEnum.CHAT.getCode(), nickname, avatar, message));
     }
 
     /**
@@ -68,16 +119,29 @@ public class ChatWebSocketServer {
     @OnClose
     public void onClose(Session session) {
         String sessionId = session.getId();
-        // 删除对应会话
-        SESSION_MAP.remove(sessionId);
 
-        // 在线人数-1
-        int count = ONLINE_COUNT.decrementAndGet();
+        // 如果会话存在
+        if (SESSION_MAP.containsKey(sessionId)) {
+            // 获取用户信息
+            UserInfoVO userInfoVO = USER_INFO_MAP.get(sessionId);
+            String nickname = Objects.nonNull(userInfoVO) ? userInfoVO.getNickname() : null;
 
-        log.info("## 用户 [sessionId:{}] 离开了聊天室，当前在线人数: {}", sessionId, count);
+            // 删除对应会话
+            SESSION_MAP.remove(sessionId);
+            // 删除用户信息
+            USER_INFO_MAP.remove(sessionId);
 
-        // 发送广播，告诉所有在线用户，有人离开了
-        broadcastMessage("有人离开了聊天室，当前在线人数: " + count);
+            // 在线人数-1
+            int count = ONLINE_COUNT.decrementAndGet();
+
+            log.info("## 用户 [sessionId:{}] [昵称:{}] 离开了聊天室，当前在线人数: {}", sessionId, nickname, count);
+
+            // 广播系统消息，告诉所有在线用户，有人离开了
+            broadcastMessage(buildMessage(ChatRoomMessageTypeEnum.SYSTEM.getCode(), nickname, null, "离开了聊天室"));
+            // 广播在线用户列表
+            broadcastOnlineUsers();
+        }
+
     }
 
     /**
@@ -104,6 +168,79 @@ public class ChatWebSocketServer {
      */
     private void broadcastMessage(String message) {
         SESSION_MAP.values().forEach(session -> sendMessage(session, message));
+    }
+
+    /**
+     * 获取对应参数
+     * @param fieldName
+     * @param params
+     * @return
+     */
+    private String getFieldValueFromParam(String fieldName, Map<String, List<String>> params) {
+        // 如果包含对应字段，且不为空，则取出
+        if (params.containsKey(fieldName)
+                && !CollectionUtils.isEmpty(params.get(fieldName))) {
+            return params.get(fieldName).get(0);
+        }
+        return null;
+    }
+
+    /**
+     * 构建消息 JSON 字符串
+     */
+    private String buildMessage(Integer type, String nickname, String avatar, String content) {
+        return JsonUtil.toJsonString(ChatMessageVO.builder()
+                .type(type)
+                .nickname(nickname)
+                .avatar(avatar)
+                .content(content)
+                .time(LocalDateTime.now().format(TIME_FORMATTER))
+                .onlineCount(ONLINE_COUNT.get())
+                .build());
+    }
+
+    /**
+     * 保存消息到数据库
+     */
+    private void saveMessage(String nickname, String avatar, String content) {
+        ChatMessageDO chatMessage = ChatMessageDO.builder()
+                .nickname(nickname)
+                .avatar(avatar)
+                .content(content)
+                .createTime(LocalDateTime.now())
+                .build();
+        ChatMessageMapper chatMessageMapper = SpringContext.getBean(ChatMessageMapper.class);
+        chatMessageMapper.insert(chatMessage);
+    }
+
+    /**
+     * 广播在线用户列表
+     */
+    private void broadcastOnlineUsers() {
+        // 构建在线用户列表 VO
+        OnlineUsersMessageVO msg = OnlineUsersMessageVO.builder()
+                .type(ChatRoomMessageTypeEnum.ONLINE_USERS.getCode())
+                .onlineCount(ONLINE_COUNT.get())
+                .users(getOnlineUsers())
+                .build();
+
+        // 广播消息
+        broadcastMessage(JsonUtil.toJsonString(msg));
+    }
+
+    /**
+     * 获取在线用户列表
+     */
+    public static List<OnlineUserVO> getOnlineUsers() {
+        List<OnlineUserVO> users = new ArrayList<>();
+        USER_INFO_MAP.forEach((sessionId, userInfo) -> {
+            users.add(OnlineUserVO.builder()
+                    .nickname(userInfo.getNickname())
+                    .avatar(userInfo.getAvatar())
+                    .online(true)
+                    .build());
+        });
+        return users;
     }
 
 }
