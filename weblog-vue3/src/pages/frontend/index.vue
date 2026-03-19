@@ -118,6 +118,31 @@
                 <!-- 博主信息 -->
                 <UserInfoCard></UserInfoCard>
 
+                <!-- 聊天室入口 -->
+                 <div @click="jump2ChatRoomPage" class="group w-full py-5 px-4 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 cursor-pointer hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <!-- 聊天图标 -->
+                            <div class="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center">
+                                <svg t="1768296965309" class="w-4 h-4 text-sky-600 dark:text-sky-400" fill="currentColor" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9348" width="200" height="200">
+                                    <path d="M512 457.031816A55.033029 55.033029 0 1 0 567.033029 512.064845 55.033029 55.033029 0 0 0 512 457.031816z m220.132117 0A55.033029 55.033029 0 1 0 786.738533 512.064845a55.033029 55.033029 0 0 0-55.033029-55.033029z m-439.837621 0A55.033029 55.033029 0 1 0 346.900913 512.064845a55.033029 55.033029 0 0 0-55.03303-55.033029z" p-id="9349"></path><path d="M917.70861 637.062345a405.70861 405.70861 0 0 1-93.854778 127.983789A442.823909 442.823909 0 0 1 682.645052 853.354948a475.246469 475.246469 0 0 1-324.225598 7.252415 35.835461 35.835461 0 0 0-29.436272 2.986288L213.37116 929.718609l-18.344343-154.860384a35.835461 35.835461 0 0 0-10.238703-20.904019 389.923943 389.923943 0 0 1-115.18541-274.738533 378.832015 378.832015 0 0 1 34.12901-157.846673 405.70861 405.70861 0 0 1 93.854778-127.983789A442.823909 442.823909 0 0 1 341.354948 104.223172a474.393244 474.393244 0 0 1 343.849779 0 441.117458 441.117458 0 0 1 138.649105 87.882201 406.135223 406.135223 0 0 1 93.854778 127.983789 380.111852 380.111852 0 0 1 0 315.266733zM981.273892 291.932729a476.099694 476.099694 0 0 0-110.492671-152.300709 511.935155 511.935155 0 0 0-160.406348-102.387031 546.91739 546.91739 0 0 0-396.749746 0 511.935155 511.935155 0 0 0-162.539411 102.387031A478.232757 478.232757 0 0 0 42.726108 291.932729a451.782774 451.782774 0 0 0-42.661263 187.282944 461.168252 461.168252 0 0 0 127.983789 316.119958l23.037082 196.668422a36.262073 36.262073 0 0 0 35.835461 31.995947 36.262073 36.262073 0 0 0 17.91773-4.692739l148.461195-85.322526a547.344003 547.344003 0 0 0 358.354608-13.651604 511.935155 511.935155 0 0 0 162.539412-102.387031A477.806145 477.806145 0 0 0 981.273892 666.925229a453.915837 453.915837 0 0 0 0-374.9925z" p-id="9350"></path>
+                                </svg>
+                            </div>
+                            <!-- 描述信息 -->
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900 dark:text-white">公共聊天室</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">一起来聊天吧</p>
+                            </div>
+                        </div>
+                        <!-- 箭头 -->
+                        <svg class="w-3 h-3 text-gray-400 dark:text-white transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 8 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 13 5.7-5.326a.909.909 0 0 0 0-1.348L1 1" />
+                        </svg>
+                    </div>
+                </div>
+
                 <!-- 分类 -->
                 <CategoryListCard></CategoryListCard>
 
@@ -208,4 +233,10 @@ const goTagArticleListPage = (id, name) => {
     // 跳转时通过 query 携带参数（标签 ID、标签名称）
     router.push({path: '/tag/article/list', query: {id, name}})
 }
+
+// 跳转公共聊天室页面
+const jump2ChatRoomPage = () => {
+    router.push('/chat')
+}
+
 </script>
