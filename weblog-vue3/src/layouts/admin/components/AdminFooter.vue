@@ -5,7 +5,7 @@
     <!-- Copyright 版权信息 -->
     Copyright © 2026. All rights reserved. Provided by&nbsp; <a
       class="underline"
-      href="https://www.suoyike.com"
+      href="https://github.com/suoyike66"
       target="_blank"
       >蓑衣客</a
     >

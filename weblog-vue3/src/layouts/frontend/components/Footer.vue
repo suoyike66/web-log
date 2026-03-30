@@ -5,7 +5,7 @@
     >
       <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
         >© 2026
-        <a href="https://www.quanxiaoha.com/" class="hover:underline">蓑衣客</a
+        <a href="https://github.com/suoyike66/" class="hover:underline">蓑衣客</a
         >. All Rights Reserved.
       </span>
       <ul
